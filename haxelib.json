@@ -1,0 +1,21 @@
+{
+  "name": "hexioc",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["hexmachina", "mvc", "oop"],
+  "description": "TodoMVC applications built with hexMachina framework.",
+  "contributors": ["doclerlabs"],
+  "releasenote": "",
+  "version": "1.0.0",
+  "url": "https://github.com/DoclerLabs/hexTodoMVC",
+  "dependencies": 
+  {
+    "hexcore": "git:https://github.com/DoclerLabs/hexCore.git",
+    "hexannotation": "git:https://github.com/DoclerLabs/hexAnnotation.git",
+    "hexinject": "git:https://github.com/DoclerLabs/hexInject.git",
+	"hexmvc": "git:https://github.com/DoclerLabs/hexMVC.git",
+	"hexstate": "git:https://github.com/DoclerLabs/hexState.git",
+	"hexservice": "git:https://github.com/DoclerLabs/hexService.git",
+	"hexservice": "git:https://github.com/DoclerLabs/hexTodoMVC.git"
+  }
+}
