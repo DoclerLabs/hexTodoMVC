@@ -1,7 +1,7 @@
-# hexIoC
+# hexTodoMVC
 
 [![TravisCI Build Status](https://travis-ci.org/DoclerLabs/hexTodoMVC.svg?branch=master)](https://travis-ci.org/DoclerLabs/hexTodoMVC)
-TodoMVC application built with hexMachina framework.
+TodoMVC applications built with hexMachina framework.
 
 *Find more information about hexMachina on [hexmachina.org](http://hexmachina.org/)*
 
