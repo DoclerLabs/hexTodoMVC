@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<config id="todoServiceLocator" type="hex.ioc.di.MappingConfiguration" >
+		<item> 
+			<key type="Class" value="todomvc.service.ITodoService"/>
+			<value type="Class" value="configuration.TodoLocalStorage"/>
+		</item>
+	</config>
+</root>

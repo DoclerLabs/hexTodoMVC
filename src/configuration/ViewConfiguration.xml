@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	
+	<include if="browser" file="configuration/js/ViewConfigurationJS.xml"/>
+	<include if="flashplayer" file="configuration/flash/ViewConfigurationFlash.xml"/>
+	
+	<config id="viewConfig" type="hex.ioc.di.MappingConfiguration" >
+		<item> 
+			<key type="Class" value="todomvc.view.ITodoView"/>
+			<value ref="view"/>
+		</item>
+	</config>
+		
+</root>

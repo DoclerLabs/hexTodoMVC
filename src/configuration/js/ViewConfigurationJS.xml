@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	
+	<div id="div" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value="#div"/>
+	</div>
+	
+	<view id="view" type="configuration.js.TodoViewJS">
+		<argument ref="div"/>
+	</view>
+
+</root>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root name="todomvc">
+	<include file="configuration/ModuleConfiguration.xml"/>
+	<include file="configuration/ServiceConfiguration.xml"/>
+	<include file="configuration/ViewConfiguration.xml"/>
+</root>
