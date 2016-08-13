@@ -1,12 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root>
 	
-	<div id="div" type="js.Browser" static-ref="document" factory="querySelector">
-		<argument value="#div"/>
+	<div id="todoList" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".todo-list"/>
+	</div>
+	
+	<div id="todoItemCounter" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".todo-count"/>
+	</div>
+	
+	<div id="clearCompleted" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".clear-completed"/>
+	</div>
+	
+	<div id="main" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".main"/>
+	</div>
+	
+	<div id="footer" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".footer"/>
+	</div>
+	
+	<div id="toggleAll" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".toggle-all"/>
+	</div>
+	
+	<div id="newTodo" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".new-todo"/>
 	</div>
 	
 	<view id="view" type="configuration.js.TodoViewJS">
-		<argument ref="div"/>
+		<argument ref="todoList"/>
+		<argument ref="todoItemCounter"/>
+		<argument ref="clearCompleted"/>
+		<argument ref="main"/>
+		<argument ref="footer"/>
+		<argument ref="toggleAll"/>
+		<argument ref="newTodo"/>
 	</view>
 
 </root>
