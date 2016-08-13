@@ -25,12 +25,18 @@ class TodoViewJS implements ITodoView
 							toggleAll,
 							newTodo ) 
 	{
-		this._todoList 			= todoList;
+		/*this._todoList 			= todoList;
 		this._todoItemCounter 	= todoItemCounter;
 		this._clearCompleted 	= clearCompleted;
 		this._main 				= main;
 		this._footer 			= footer;
 		this._toggleAll 		= toggleAll;
-		this._newTodo 			= newTodo;
+		this._newTodo 			= newTodo;*/
+	}
+	
+	public function clearCompletedButton( completedCount : Int, visible : Bool ) 
+	{
+		//this._clearCompleted.innerHTML = this.template.clearCompletedButton( completedCount );
+		this._clearCompleted.style.display = visible ? 'block' : 'none';
 	}
 }

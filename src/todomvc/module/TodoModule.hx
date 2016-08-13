@@ -50,6 +50,6 @@ private class TodoModuleConfig extends StatelessModuleConfig
 		this.mapModel( ITodoModel, TodoModel );
 		this.mapDriver( ITodoDriver, TodoDriver );
 		
-		//this.get( ITodoDriver ).input.plug( this.get( ITodoModel ).output );
+		this.get( ITodoDriver ).input.plug( this.get( ITodoModel ).output );
 	}
 }
