@@ -1,6 +1,9 @@
 package todomvc.control;
 
+import hex.control.ICompletable;
+import hex.control.ResultResponder;
 import hex.di.IInjectorContainer;
+import hex.log.ILogger;
 import todomvc.model.ITodoModel;
 import todomvc.model.TodoItem;
 
@@ -15,6 +18,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	@Inject
 	public var model : ITodoModel;
 	
+	@Inject
+	public var logger : ILogger;
+	
 	public function new() 
 	{
 		
@@ -24,25 +30,28 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 * An event to fire on load. Will get all items and display them in the
 	 * todo-list
 	 */
-	public function showAll() : Void
+	public function showAll() : ICompletable<Array<TodoItem>>
 	{
-
+		logger.debug( 'TodoController::showAll' );
+		return new ResultResponder( this.model.getAllTodos() );
 	}
 	
 	/**
 	 * Renders all active tasks
 	 */
-	public function showActive() : Void
+	public function showActive() : ICompletable<Array<TodoItem>>
 	{
-
+		logger.debug( 'TodoController::showActive' );
+		return new ResultResponder( this.model.getActiveTodos() );
 	}
 	
 	/**
 	 * Renders all completed tasks
 	 */
-	public function showCompleted() : Void
+	public function showCompleted() : ICompletable<Array<TodoItem>>
 	{
-
+		logger.debug( 'TodoController::showCompleted' );
+		return new ResultResponder( this.model.getCompletedTodos() );
 	}
 	
 	/**
@@ -51,13 +60,13 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function addItem( title : String ) : Void
 	{
-		trace( 'TodoController.addItem:' + title );
+		logger.debug( 'TodoController::addItem:' + title );
 		
-		var newTodo = title.trim();
+		var newTodoTitle = title.trim();
 		
-		if ( newTodo.length > 0  ) 
+		if ( newTodoTitle.length > 0  ) 
 		{
-			this.model.addTodo( new TodoItem( newTodo, false ) );
+			this.model.addTodo( new TodoItem( newTodoTitle, false ) );
 			/**
 				self.model.create(title, function () {
 				self.view.render('clearNewTodo');
@@ -72,7 +81,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItem( id : Int ) : Void
 	{
-
+		logger.debug( 'TodoController::editItem:' + id );
 	}
 	
 	/*
@@ -80,7 +89,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItemSave( id : Int, title : String ) : Void
 	{
-		
+		logger.debug( 'TodoController::editItemSave:' + id );
 	}
 	
 	/*
@@ -88,7 +97,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItemCancel( id : Int ) : Void
 	{
-		
+		logger.debug( 'TodoController::editItemCancel:' + id );
 	}
 	
 	/**
@@ -100,7 +109,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function removeItem( id : Int ) : Void
 	{
-		
+		logger.debug( 'TodoController::removeItem:' + id );
 	}
 	
 	/**
@@ -108,7 +117,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function removeCompletedItems() : Void
 	{
-		trace( 'TodoController.removeCompletedItems' );
+		logger.debug( 'TodoController::removeCompletedItems' );
 	}
 	
 	/**
@@ -122,7 +131,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function toggleComplete( id : Int, completed : Dynamic, silent : Bool = true ) : Void
 	{
-		
+		logger.debug( 'TodoController::toggleComplete:' + id + ":" + completed + ":" + silent );
 	}
 	
 	/**
@@ -131,6 +140,6 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function toggleAll( isCompleted : Bool ) : Void
 	{
-		trace( 'TodoController.toggleAll:', isCompleted );
+		logger.debug( 'TodoController::toggleAll:' + isCompleted );
 	}
 }

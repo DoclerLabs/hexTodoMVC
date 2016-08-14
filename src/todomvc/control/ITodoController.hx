@@ -1,21 +1,24 @@
 package todomvc.control;
 
+import hex.control.ICompletable;
+import todomvc.model.TodoItem;
+
 /**
  * @author Francis Bourre
  */
 interface ITodoController 
 {
-	function showAll() : Void;
+	function showAll() : ICompletable<Array<TodoItem>>;
 	
 	/**
 	 * Renders all active tasks
 	 */
-	function showActive() : Void;
+	function showActive() : ICompletable<Array<TodoItem>>;
 	
 	/**
 	 * Renders all completed tasks
 	 */
-	function showCompleted() : Void;
+	function showCompleted() : ICompletable<Array<TodoItem>>;
 	
 	/**
 	 * An event to fire whenever you want to add an item. Simply pass in the event

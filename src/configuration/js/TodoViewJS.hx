@@ -17,7 +17,7 @@ import todomvc.view.ITodoView;
 class TodoViewJS implements ITodoView implements IInjectorContainer
 {
 	var _controller 		: ITodoController;
-	var qs 					: String -> Element = Browser.document.querySelector;
+	var _qs 					: String -> Element = Browser.document.querySelector;
 	
 	var _template 			: Template;
 	var _todoList 			: InputElement;
@@ -185,7 +185,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _removeItem( id : String ) : Void
 	{
-		var elem = qs( '[data-id="' + id + '"]' );
+		var elem = this._qs( '[data-id="' + id + '"]' );
 
 		if ( elem != null ) 
 		{
@@ -208,13 +208,13 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _setFilter( currentPage : String ) : Void
 	{
-		qs( '.filters .selected' ).className = '';
-		qs( '.filters [href="#/' + currentPage + '"]' ).className = 'selected';
+		this._qs( '.filters .selected' ).className = '';
+		this._qs( '.filters [href="#/' + currentPage + '"]' ).className = 'selected';
 	}
 
 	function _elementComplete( id, completed ) : Void
 	{
-		var listItem = qs( '[data-id="' + id + '"]' );
+		var listItem = this._qs( '[data-id="' + id + '"]' );
 
 		if ( listItem != null ) 
 		{
@@ -229,7 +229,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 
 	function _editItem( id, title ) : Void
 	{
-		var listItem = qs('[data-id="' + id + '"]');
+		var listItem = this._qs('[data-id="' + id + '"]');
 
 		if ( listItem != null ) 
 		{
@@ -246,7 +246,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 
 	function _editItemDone( id, title ) : Void
 	{
-		var listItem = qs( '[data-id="' + id + '"]' );
+		var listItem = this._qs( '[data-id="' + id + '"]' );
 
 		if ( listItem != null ) 
 		{

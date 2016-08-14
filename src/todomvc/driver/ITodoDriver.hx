@@ -2,12 +2,12 @@ package todomvc.driver;
 
 import hex.mdvc.driver.IInput;
 import hex.mdvc.driver.IInputOwner;
-import todomvc.model.ITodoConnection;
+import todomvc.view.ITodoView;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoDriver extends ITodoConnection extends IInputOwner
+interface ITodoDriver extends ITodoView extends IInputOwner
 {
-	var input : IInput<ITodoConnection>;
+	var input : IInput<ITodoView>;
 }
