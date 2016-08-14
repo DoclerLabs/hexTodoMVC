@@ -7,6 +7,14 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var EReg = function(r,opt) {
+	this.r = new RegExp(r,opt.split("u").join(""));
+};
+$hxClasses["EReg"] = EReg;
+EReg.__name__ = ["EReg"];
+EReg.prototype = {
+	__class__: EReg
+};
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = ["HxOverrides"];
@@ -67,6 +75,7 @@ var Main = function() { };
 $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
 Main.main = function() {
+	haxe_Log.trace("yup",{ fileName : "Main.hx", lineNumber : 21, className : "Main", methodName : "main"});
 	var applicationContext = new hex_ioc_assembler_ApplicationAssembler().getApplicationContext("todomvc");
 	applicationContext.dispatch(hex_ioc_assembler_ApplicationAssemblerMessage.CONTEXT_PARSED);
 	var __applicationContextInjector = applicationContext.getInjector();
@@ -169,6 +178,14 @@ StringBuf.prototype = {
 var StringTools = function() { };
 $hxClasses["StringTools"] = StringTools;
 StringTools.__name__ = ["StringTools"];
+StringTools.htmlEscape = function(s,quotes) {
+	s = s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+	if(quotes) {
+		return s.split("\"").join("&quot;").split("'").join("&#039;");
+	} else {
+		return s;
+	}
+};
 StringTools.isSpace = function(s,pos) {
 	var c = HxOverrides.cca(s,pos);
 	if(!(c > 8 && c < 14)) {
@@ -199,6 +216,9 @@ StringTools.rtrim = function(s) {
 };
 StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
+};
+StringTools.replace = function(s,sub,by) {
+	return s.split(sub).join(by);
 };
 var Type = function() { };
 $hxClasses["Type"] = Type;
@@ -404,23 +424,219 @@ configuration_TodoLocalStorage.prototype = {
 	}
 	,__class__: configuration_TodoLocalStorage
 };
+var configuration_js_Template = function() {
+	this.reHasUnescapedHtml = new EReg("[&<>\"'`]","g");
+	this.defaultTemplate = "<li data-id=\"{{id}}\" class=\"{{completed}}\">" + "<div class=\"view\">" + "<input class=\"toggle\" type=\"checkbox\" {{checked}}>" + "<label>{{title}}</label>" + "<button class=\"destroy\"></button>" + "</div>" + "</li>";
+};
+$hxClasses["configuration.js.Template"] = configuration_js_Template;
+configuration_js_Template.__name__ = ["configuration","js","Template"];
+configuration_js_Template.prototype = {
+	show: function(data) {
+		var view = "";
+		var _g1 = 0;
+		var _g = data.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var template = this.defaultTemplate;
+			var completed = "";
+			var checked = "";
+			if(data[i].completed) {
+				completed = "completed";
+				checked = "checked";
+			}
+			template = StringTools.replace(template,"{{id}}",data[i].id);
+			template = StringTools.replace(template,"{{title}}",this._escape(data[i].title));
+			template = StringTools.replace(template,"{{completed}}",completed);
+			template = StringTools.replace(template,"{{checked}}",checked);
+			view += template;
+		}
+		return view;
+	}
+	,itemCounter: function(activeTodos) {
+		return "<strong>" + activeTodos + "</strong> item" + (activeTodos == 1?"":"s") + " left";
+	}
+	,clearCompletedButton: function(completedTodos) {
+		if(completedTodos > 0) {
+			return "Clear completed";
+		} else {
+			return "";
+		}
+	}
+	,_escape: function(string) {
+		return StringTools.htmlEscape(string,true);
+	}
+	,__class__: configuration_js_Template
+};
+var hex_di_IInjectorContainer = function() { };
+$hxClasses["hex.di.IInjectorContainer"] = hex_di_IInjectorContainer;
+hex_di_IInjectorContainer.__name__ = ["hex","di","IInjectorContainer"];
 var todomvc_view_ITodoView = function() { };
 $hxClasses["todomvc.view.ITodoView"] = todomvc_view_ITodoView;
 todomvc_view_ITodoView.__name__ = ["todomvc","view","ITodoView"];
+todomvc_view_ITodoView.prototype = {
+	__class__: todomvc_view_ITodoView
+};
 var configuration_js_TodoViewJS = function(todoList,todoItemCounter,clearCompleted,main,footer,toggleAll,newTodo) {
+	this.qs = ($_=window.document,$bind($_,$_.querySelector));
+	this._template = new configuration_js_Template();
+	this._todoList = todoList;
+	this._todoItemCounter = todoItemCounter;
+	this._clearCompleted = clearCompleted;
+	this._main = main;
+	this._footer = footer;
+	this._toggleAll = toggleAll;
+	this._newTodo = newTodo;
 };
 $hxClasses["configuration.js.TodoViewJS"] = configuration_js_TodoViewJS;
 configuration_js_TodoViewJS.__name__ = ["configuration","js","TodoViewJS"];
 configuration_js_TodoViewJS.__interfaces__ = [todomvc_view_ITodoView];
 configuration_js_TodoViewJS.prototype = {
-	clearCompletedButton: function(completedCount,visible) {
+	setController: function(controller) {
+		var _gthis = this;
+		this._controller = controller;
+		$(function() {
+			_gthis._initController();
+		});
+	}
+	,_initController: function() {
+		var _gthis = this;
+		$(this._newTodo).on("change",null,function(e) {
+			_gthis._controller.addItem(_gthis._newTodo.value);
+		});
+		$(this._clearCompleted).on("click",null,function(e1) {
+			_gthis._controller.removeCompletedItems();
+		});
+		$(this._toggleAll).on("click",null,function(e2) {
+			_gthis._controller.toggleAll(_gthis._toggleAll.checked);
+		});
+		$(this._todoList).delegate("li label","dblclick",function(e3) {
+			_gthis._controller.editItem(_gthis._itemID(e3.target));
+		});
+		$(this._todoList).delegate(".destroy","click",function(e4) {
+			_gthis._controller.removeItem(_gthis._itemID(e4.target));
+		});
+		$(this._todoList).delegate(".toggle","click",function(e5) {
+			_gthis._controller.toggleComplete(_gthis._itemID(e5.target),e5.target.checked);
+		});
+	}
+	,showEntries: function(entries) {
+		this._todoList.innerHTML = this._template.show(entries);
+	}
+	,removeItem: function(item) {
+		this._removeItem(item);
+	}
+	,updateElementCount: function(activeTodos) {
+		this._todoItemCounter.innerHTML = this._template.itemCounter(activeTodos);
+	}
+	,clearCompletedButton: function(parameter) {
+		this._clearCompletedButton(parameter.completed,parameter.visible);
+	}
+	,contentBlockVisibility: function(parameter) {
+		this._main.style.display = this._footer.style.display = parameter.visible?"block":"none";
+	}
+	,toggleAll: function(parameter) {
+		this._toggleAll.checked = parameter.checked;
+	}
+	,setFilter: function(parameter) {
+		this._setFilter(parameter);
+	}
+	,clearNewTodo: function() {
+		this._newTodo.value = "";
+	}
+	,elementComplete: function(parameter) {
+		this._elementComplete(parameter.id,parameter.completed);
+	}
+	,editItem: function(item) {
+		this._editItem(item.id,item.title);
+	}
+	,editItemDone: function(item) {
+		this._editItemDone(item.id,item.title);
+	}
+	,_removeItem: function(id) {
+		var elem = this.qs("[data-id=\"" + id + "\"]");
+		if(elem != null) {
+			this._todoList.removeChild(elem);
+		}
+	}
+	,_itemID: function(element) {
+		return Std.parseInt($(element).parent("li").dataset.id);
+	}
+	,_clearCompletedButton: function(completedTodos,visible) {
+		this._clearCompleted.innerHTML = this._template.clearCompletedButton(completedTodos);
 		this._clearCompleted.style.display = visible?"block":"none";
+	}
+	,_setFilter: function(currentPage) {
+		this.qs(".filters .selected").className = "";
+		this.qs(".filters [href=\"#/" + currentPage + "\"]").className = "selected";
+	}
+	,_elementComplete: function(id,completed) {
+		var listItem = this.qs("[data-id=\"" + id + "\"]");
+		if(listItem != null) {
+			listItem.className = completed?"completed":"";
+			listItem.querySelector("input").checked = completed;
+		}
+	}
+	,_editItem: function(id,title) {
+		var listItem = this.qs("[data-id=\"" + id + "\"]");
+		if(listItem != null) {
+			listItem.className = listItem.className + " editing";
+			var input = window.document.createElement("input");
+			input.className = "edit";
+			listItem.appendChild(input);
+			input.focus();
+			input.value = title;
+		}
+	}
+	,_editItemDone: function(id,title) {
+		var listItem = this.qs("[data-id=\"" + id + "\"]");
+		if(listItem != null) {
+			listItem.removeChild(listItem.querySelector("input.edit"));
+			listItem.className = listItem.className.split("editing").join("");
+			var list = listItem.querySelectorAll("label");
+			var _g = 0;
+			while(_g < list.length) {
+				var label = list[_g];
+				++_g;
+				label.textContent = title;
+			}
+		}
+	}
+	,_bindItemEditDone: function() {
+		var _gthis = this;
+		$(this._todoList).delegate("li .edit","blur",function(e) {
+			var li = e.target;
+			if(li.dataset.iscanceled != null) {
+				_gthis._controller.editItemSave(_gthis._itemID(li),"" + li.value);
+			}
+		});
+		$(this._todoList).delegate("li .edit","keypress",function(e1) {
+			if(e1.keyCode == 13) {
+				e1.target.blur();
+			}
+		});
+	}
+	,_bindItemEditCancel: function() {
+		var _gthis = this;
+		$(this._todoList).delegate("li .edit","keyup",function(e) {
+			if(e.keyCode == 27) {
+				var li = e.target;
+				li.dataset.iscanceled = "true";
+				li.blur();
+				_gthis._controller.editItemCancel(_gthis._itemID(li));
+			}
+		});
 	}
 	,__class__: configuration_js_TodoViewJS
 };
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = ["haxe","IMap"];
+var haxe_Log = function() { };
+$hxClasses["haxe.Log"] = haxe_Log;
+haxe_Log.__name__ = ["haxe","Log"];
+haxe_Log.trace = function(v,infos) {
+	js_Boot.__trace(v,infos);
+};
 var haxe_ds_ArraySort = function() { };
 $hxClasses["haxe.ds.ArraySort"] = haxe_ds_ArraySort;
 haxe_ds_ArraySort.__name__ = ["haxe","ds","ArraySort"];
@@ -1814,9 +2030,6 @@ hex_control_macro_IMacroExecutor.prototype = {
 	__class__: hex_control_macro_IMacroExecutor
 	,__properties__: {get_commandIndex:"get_commandIndex",get_hasRunEveryCommand:"get_hasRunEveryCommand",get_hasNextCommandMapping:"get_hasNextCommandMapping"}
 };
-var hex_di_IInjectorContainer = function() { };
-$hxClasses["hex.di.IInjectorContainer"] = hex_di_IInjectorContainer;
-hex_di_IInjectorContainer.__name__ = ["hex","di","IInjectorContainer"];
 var hex_control_macro_Macro = function() {
 	this._isSequenceMode = true;
 	this._isAtomic = true;
@@ -2120,6 +2333,29 @@ hex_core_HashCodeFactory.prototype = {
 var hex_core_IAnnotationParsable = function() { };
 $hxClasses["hex.core.IAnnotationParsable"] = hex_core_IAnnotationParsable;
 hex_core_IAnnotationParsable.__name__ = ["hex","core","IAnnotationParsable"];
+var hex_data_GUID = function() { };
+$hxClasses["hex.data.GUID"] = hex_data_GUID;
+hex_data_GUID.__name__ = ["hex","data","GUID"];
+hex_data_GUID.randomIntegerWithinRange = function(min,max) {
+	return Math.floor(Math.random() * (1 + max - min) + min);
+};
+hex_data_GUID.createRandomIdentifier = function(length,radix) {
+	if(radix == null) {
+		radix = 61;
+	}
+	var characters = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+	var id = [];
+	if(radix > 61) {
+		radix = 61;
+	} else {
+		radix = radix;
+	}
+	while(length-- > 0) id.push(characters[Math.floor(Math.random() * (1 + radix))]);
+	return id.join("");
+};
+hex_data_GUID.uuid = function() {
+	return hex_data_GUID.createRandomIdentifier(8,15) + "" + hex_data_GUID.createRandomIdentifier(4,15) + "4" + hex_data_GUID.createRandomIdentifier(3,15) + "" + ["8","9","A","B"][Math.floor(Math.random() * 4)] + hex_data_GUID.createRandomIdentifier(3,15) + "" + hex_data_GUID.createRandomIdentifier(12,15);
+};
 var hex_data_IParser = function() { };
 $hxClasses["hex.data.IParser"] = hex_data_IParser;
 hex_data_IParser.__name__ = ["hex","data","IParser"];
@@ -2546,7 +2782,7 @@ hex_di_mapping_InjectionMapping.prototype = {
 	}
 	,_toProvider: function(provider) {
 		if(this.provider != null) {
-			console.log("Warning: Injector already has a mapping for " + this._mappingID + ".\n " + "If you have overridden this mapping intentionally you can use " + "\"injector.unmap()\" prior to your replacement mapping in order to " + "avoid seeing this message.");
+			haxe_Log.trace("Warning: Injector already has a mapping for " + this._mappingID + ".\n " + "If you have overridden this mapping intentionally you can use " + "\"injector.unmap()\" prior to your replacement mapping in order to " + "avoid seeing this message.",{ fileName : "InjectionMapping.hx", lineNumber : 64, className : "hex.di.mapping.InjectionMapping", methodName : "_toProvider"});
 		}
 		this.provider = provider;
 		return this;
@@ -4415,7 +4651,7 @@ hex_ioc_control_HashMapFactory.build = function(factoryVO) {
 			if(item.key != null) {
 				map.put(item.key,item.value);
 			} else {
-				console.log("HashMapFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.");
+				haxe_Log.trace("HashMapFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.",{ fileName : "HashMapFactory.hx", lineNumber : 43, className : "hex.ioc.control.HashMapFactory", methodName : "build"});
 			}
 		}
 	}
@@ -4455,7 +4691,7 @@ hex_ioc_control_MappingConfigurationFactory.build = function(factoryVO) {
 	var config = new hex_ioc_di_MappingConfiguration();
 	var args = constructorVO["arguments"];
 	if(args.length <= 0) {
-		console.log("MappingConfigurationFactory.build(" + Std.string(args) + ") returns an empty congiuration.");
+		haxe_Log.trace("MappingConfigurationFactory.build(" + Std.string(args) + ") returns an empty congiuration.",{ fileName : "MappingConfigurationFactory.hx", lineNumber : 28, className : "hex.ioc.control.MappingConfigurationFactory", methodName : "build"});
 	} else {
 		var _g = 0;
 		while(_g < args.length) {
@@ -4464,7 +4700,7 @@ hex_ioc_control_MappingConfigurationFactory.build = function(factoryVO) {
 			if(item.key != null) {
 				config.addMapping(item.key,item.value,item.mapName,item.asSingleton);
 			} else {
-				console.log("MappingConfigurationFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.");
+				haxe_Log.trace("MappingConfigurationFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.",{ fileName : "MappingConfigurationFactory.hx", lineNumber : 40, className : "hex.ioc.control.MappingConfigurationFactory", methodName : "build"});
 			}
 		}
 	}
@@ -4517,7 +4753,7 @@ hex_ioc_control_ServiceLocatorFactory.build = function(factoryVO) {
 	var serviceLocator = new hex_config_stateful_ServiceLocator();
 	var args = constructorVO["arguments"];
 	if(args.length <= 0) {
-		console.log("ServiceLocatorFactory.build(" + Std.string(args) + ") returns an empty ServiceConfig.");
+		haxe_Log.trace("ServiceLocatorFactory.build(" + Std.string(args) + ") returns an empty ServiceConfig.",{ fileName : "ServiceLocatorFactory.hx", lineNumber : 28, className : "hex.ioc.control.ServiceLocatorFactory", methodName : "build"});
 	} else {
 		var _g = 0;
 		while(_g < args.length) {
@@ -4526,7 +4762,7 @@ hex_ioc_control_ServiceLocatorFactory.build = function(factoryVO) {
 			if(item.key != null) {
 				serviceLocator.addService(item.key,item.value,item.mapName);
 			} else {
-				console.log("ServiceLocatorFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.");
+				haxe_Log.trace("ServiceLocatorFactory.build() adds item with a 'null' key for '" + Std.string(item.value) + "' value.",{ fileName : "ServiceLocatorFactory.hx", lineNumber : 40, className : "hex.ioc.control.ServiceLocatorFactory", methodName : "build"});
 			}
 		}
 	}
@@ -5119,6 +5355,35 @@ hex_util_FastEval.prototype = {
 var js_Boot = function() { };
 $hxClasses["js.Boot"] = js_Boot;
 js_Boot.__name__ = ["js","Boot"];
+js_Boot.__unhtml = function(s) {
+	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+};
+js_Boot.__trace = function(v,i) {
+	var msg = i != null?i.fileName + ":" + i.lineNumber + ": ":"";
+	msg += js_Boot.__string_rec(v,"");
+	if(i != null && i.customParams != null) {
+		var _g = 0;
+		var _g1 = i.customParams;
+		while(_g < _g1.length) {
+			var v1 = _g1[_g];
+			++_g;
+			msg += "," + js_Boot.__string_rec(v1,"");
+		}
+	}
+	var d;
+	var tmp;
+	if(typeof(document) != "undefined") {
+		d = document.getElementById("haxe:trace");
+		tmp = d != null;
+	} else {
+		tmp = false;
+	}
+	if(tmp) {
+		d.innerHTML += js_Boot.__unhtml(msg) + "<br/>";
+	} else if(typeof console != "undefined" && console.log != null) {
+		console.log(msg);
+	}
+};
 js_Boot.getClass = function(o) {
 	if((o instanceof Array) && o.__enum__ == null) {
 		return Array;
@@ -5695,19 +5960,25 @@ hex_ioc_di_MappingConfiguration.prototype = $extend(hex_collection_Locator.proto
 						serviceDispatcher.add(dispatcher);
 					}
 				}
+				if(helper.injectInto) {
+					injector.injectInto(mapped);
+				}
 				injector.mapToValue(classKey,mapped,helper.mapName);
 			}
 			this._mapping.put(classKey,mapped);
 		}
 	}
-	,addMapping: function(type,value,mapName,asSingleton) {
+	,addMapping: function(type,value,mapName,asSingleton,injectInto) {
+		if(injectInto == null) {
+			injectInto = false;
+		}
 		if(asSingleton == null) {
 			asSingleton = false;
 		}
 		if(mapName == null) {
 			mapName = "";
 		}
-		return this._registerMapping(type,new hex_ioc_di__$MappingConfiguration_Helper(value,mapName,asSingleton),mapName);
+		return this._registerMapping(type,new hex_ioc_di__$MappingConfiguration_Helper(value,mapName,asSingleton,injectInto),mapName);
 	}
 	,getMapping: function() {
 		return this._mapping;
@@ -5726,19 +5997,17 @@ hex_ioc_di_MappingConfiguration.prototype = $extend(hex_collection_Locator.proto
 	}
 	,__class__: hex_ioc_di_MappingConfiguration
 });
-var hex_ioc_di__$MappingConfiguration_Helper = function(value,mapName,isSingleton) {
-	if(isSingleton == null) {
-		isSingleton = false;
-	}
+var hex_ioc_di__$MappingConfiguration_Helper = function(value,mapName,isSingleton,injectInto) {
 	this.value = value;
 	this.mapName = mapName;
 	this.isSingleton = isSingleton;
+	this.injectInto = injectInto;
 };
 $hxClasses["hex.ioc.di._MappingConfiguration.Helper"] = hex_ioc_di__$MappingConfiguration_Helper;
 hex_ioc_di__$MappingConfiguration_Helper.__name__ = ["hex","ioc","di","_MappingConfiguration","Helper"];
 hex_ioc_di__$MappingConfiguration_Helper.prototype = {
 	toString: function() {
-		return "Helper( value:" + Std.string(this.value) + ", mapName:" + this.mapName + ", isSingleton:" + Std.string(this.isSingleton) + " )";
+		return "Helper( value:" + Std.string(this.value) + ", mapName:" + this.mapName + ", isSingleton:" + Std.string(this.isSingleton) + ", injectInto:" + Std.string(this.injectInto) + " )";
 	}
 	,__class__: hex_ioc_di__$MappingConfiguration_Helper
 };
@@ -6319,7 +6588,7 @@ hex_mdvc_module_Module.prototype = {
 			this.isInitialized = true;
 			this._fireInitialisationEvent();
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("initialize can't be called more than once. Check your code.",{ fileName : "Module.hx", lineNumber : 71, className : "hex.mdvc.module.Module", methodName : "initialize"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("initialize can't be called more than once. Check your code.",{ fileName : "Module.hx", lineNumber : 66, className : "hex.mdvc.module.Module", methodName : "initialize"}));
 		}
 	}
 	,get_isInitialized: function() {
@@ -6335,21 +6604,21 @@ hex_mdvc_module_Module.prototype = {
 		if(this._domainDispatcher != null) {
 			this._domainDispatcher.dispatch(messageType,data);
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 118, className : "hex.mdvc.module.Module", methodName : "dispatchPublicMessage"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 113, className : "hex.mdvc.module.Module", methodName : "dispatchPublicMessage"}));
 		}
 	}
 	,addHandler: function(messageType,scope,callback) {
 		if(this._domainDispatcher != null) {
 			this._domainDispatcher.addHandler(messageType,scope,callback);
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 133, className : "hex.mdvc.module.Module", methodName : "addHandler"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 128, className : "hex.mdvc.module.Module", methodName : "addHandler"}));
 		}
 	}
 	,removeHandler: function(messageType,scope,callback) {
 		if(this._domainDispatcher != null) {
 			this._domainDispatcher.removeHandler(messageType,scope,callback);
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 148, className : "hex.mdvc.module.Module", methodName : "removeHandler"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException("Domain dispatcher is null. Try to use 'Module.registerInternalDomain' before calling super constructor to fix the problem",{ fileName : "Module.hx", lineNumber : 143, className : "hex.mdvc.module.Module", methodName : "removeHandler"}));
 		}
 	}
 	,_dispatchPrivateMessage: function(messageType,data) {
@@ -6370,7 +6639,7 @@ hex_mdvc_module_Module.prototype = {
 			this._injector.teardown();
 			this._logger = null;
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".release can't be called more than once. Check your code.",{ fileName : "Module.hx", lineNumber : 192, className : "hex.mdvc.module.Module", methodName : "release"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".release can't be called more than once. Check your code.",{ fileName : "Module.hx", lineNumber : 180, className : "hex.mdvc.module.Module", methodName : "release"}));
 		}
 	}
 	,getInjector: function() {
@@ -6383,14 +6652,14 @@ hex_mdvc_module_Module.prototype = {
 		if(this.get_isInitialized()) {
 			this.dispatchPublicMessage(hex_module_ModuleMessage.INITIALIZED,[this]);
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".fireModuleInitialisationNote can't be called with previous initialize call.",{ fileName : "Module.hx", lineNumber : 218, className : "hex.mdvc.module.Module", methodName : "_fireInitialisationEvent"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".fireModuleInitialisationNote can't be called with previous initialize call.",{ fileName : "Module.hx", lineNumber : 206, className : "hex.mdvc.module.Module", methodName : "_fireInitialisationEvent"}));
 		}
 	}
 	,_fireReleaseEvent: function() {
 		if(this.get_isReleased()) {
 			this.dispatchPublicMessage(hex_module_ModuleMessage.RELEASED,[this]);
 		} else {
-			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".fireModuleReleaseNote can't be called with previous release call.",{ fileName : "Module.hx", lineNumber : 234, className : "hex.mdvc.module.Module", methodName : "_fireReleaseEvent"}));
+			throw new js__$Boot_HaxeError(new hex_error_IllegalStateException(Std.string(this) + ".fireModuleReleaseNote can't be called with previous release call.",{ fileName : "Module.hx", lineNumber : 222, className : "hex.mdvc.module.Module", methodName : "_fireReleaseEvent"}));
 		}
 	}
 	,_onInitialisation: function() {
@@ -7166,28 +7435,37 @@ $hxClasses["todomvc.control.TodoController"] = todomvc_control_TodoController;
 todomvc_control_TodoController.__name__ = ["todomvc","control","TodoController"];
 todomvc_control_TodoController.__interfaces__ = [todomvc_control_ITodoController];
 todomvc_control_TodoController.prototype = {
-	addTodo: function(title) {
+	showAll: function() {
+	}
+	,showActive: function() {
+	}
+	,showCompleted: function() {
+	}
+	,addItem: function(title) {
+		haxe_Log.trace("TodoController.addItem:" + title,{ fileName : "TodoController.hx", lineNumber : 54, className : "todomvc.control.TodoController", methodName : "addItem"});
 		var newTodo = StringTools.trim(title);
 		if(newTodo.length > 0) {
 			this.model.addTodo(new todomvc_model_TodoItem(newTodo,false));
 		}
 	}
-	,editTodo: function(todoItem) {
+	,editItem: function(id) {
 	}
-	,revertEdits: function(todoItem) {
+	,editItemSave: function(id,title) {
 	}
-	,doneEditing: function(todoItem) {
-		todoItem.title = StringTools.trim(todoItem.title);
-		if(todoItem.title.length < 1) {
-			this.removeTodo(todoItem);
+	,editItemCancel: function(id) {
+	}
+	,removeItem: function(id) {
+	}
+	,removeCompletedItems: function() {
+		haxe_Log.trace("TodoController.removeCompletedItems",{ fileName : "TodoController.hx", lineNumber : 111, className : "todomvc.control.TodoController", methodName : "removeCompletedItems"});
+	}
+	,toggleComplete: function(id,completed,silent) {
+		if(silent == null) {
+			silent = true;
 		}
 	}
-	,removeTodo: function(todoItem) {
-		this.model.removeTodo(todoItem);
-	}
-	,clearDoneTodos: function() {
-	}
-	,markAll: function(completed) {
+	,toggleAll: function(isCompleted) {
+		haxe_Log.trace("TodoController.toggleAll:",{ fileName : "TodoController.hx", lineNumber : 134, className : "todomvc.control.TodoController", methodName : "toggleAll", customParams : [isCompleted]});
 	}
 	,__class__: todomvc_control_TodoController
 };
@@ -7211,7 +7489,10 @@ $hxClasses["todomvc.driver.TodoDriver"] = todomvc_driver_TodoDriver;
 todomvc_driver_TodoDriver.__name__ = ["todomvc","driver","TodoDriver"];
 todomvc_driver_TodoDriver.__interfaces__ = [todomvc_driver_ITodoDriver];
 todomvc_driver_TodoDriver.prototype = {
-	addTodo: function(item) {
+	init: function() {
+		this._view.setController(this._controller);
+	}
+	,addTodo: function(item) {
 	}
 	,removeTodo: function(item) {
 	}
@@ -7224,6 +7505,7 @@ todomvc_model_ITodoModel.prototype = {
 	__class__: todomvc_model_ITodoModel
 };
 var todomvc_model_TodoItem = function(title,completed) {
+	this.id = hex_data_GUID.uuid();
 	this.title = title;
 	this.completed = completed;
 };
@@ -7240,6 +7522,7 @@ todomvc_model_TodoModel.__name__ = ["todomvc","model","TodoModel"];
 todomvc_model_TodoModel.__interfaces__ = [todomvc_model_ITodoModel];
 todomvc_model_TodoModel.prototype = {
 	addTodo: function(item) {
+		haxe_Log.trace("TodoModel.addTodo:",{ fileName : "TodoModel.hx", lineNumber : 22, className : "todomvc.model.TodoModel", methodName : "addTodo", customParams : [item]});
 		this.output.addTodo(item);
 	}
 	,removeTodo: function(item) {
@@ -7345,6 +7628,7 @@ Xml.Comment = 3;
 Xml.DocType = 4;
 Xml.ProcessingInstruction = 5;
 Xml.Document = 6;
+configuration_js_TodoViewJS.__INJECTION_DATA = { methods : [], name : "configuration.js.TodoViewJS", props : [], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
 haxe_ds_ObjectMap.count = 0;
 haxe_xml_Parser.escapes = (function($this) {
 	var $r;
@@ -7448,9 +7732,9 @@ hex_module_ModuleMessage.INITIALIZED = new hex_event_MessageType("onModuleInitia
 hex_module_ModuleMessage.RELEASED = new hex_event_MessageType("onModuleRelease");
 hex_state_StateUnmapper._stateUnmapper = new hex_collection_HashMap();
 hex_state_control_StateChangeMacro.__INJECTION_DATA = { methods : [], name : "hex.state.control.StateChangeMacro", props : [{ key : "", type : "hex.control.macro.IMacroExecutor", name : "macroExecutor", isOpt : false}], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
-todomvc_control_TodoController.__meta__ = { fields : { model : { Inject : null}}};
+todomvc_control_TodoController.__INJECTION_DATA = { methods : [], name : "todomvc.control.TodoController", props : [{ key : "", type : "todomvc.model.ITodoModel", name : "model", isOpt : false}], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
 todomvc_driver_TodoDriver.__meta__ = { fields : { input : { Input : null}}};
-todomvc_driver_TodoDriver.__INJECTION_DATA = { methods : [], name : "todomvc.driver.TodoDriver", props : [{ key : "", type : "todomvc.view.ITodoView", name : "_view", isOpt : false},{ key : "", type : "todomvc.control.ITodoController", name : "_controller", isOpt : false}], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
+todomvc_driver_TodoDriver.__INJECTION_DATA = { methods : [{ order : 0, isPost : true, name : "init", isPre : false, args : []}], name : "todomvc.driver.TodoDriver", props : [{ key : "", type : "todomvc.view.ITodoView", name : "_view", isOpt : false},{ key : "", type : "todomvc.control.ITodoController", name : "_controller", isOpt : false}], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
 todomvc_model_TodoModel.__meta__ = { fields : { output : { Output : null}}};
 todomvc_module__$TodoModule_TodoModuleConfig.__INJECTION_DATA = { methods : [], name : "todomvc.module.TodoModule", props : [{ key : "", type : "hex.di.IDependencyInjector", name : "injector", isOpt : false}], ctor : { order : 0, isPost : false, name : "new", isPre : false, args : []}};
 Main.main();

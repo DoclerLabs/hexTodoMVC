@@ -33,13 +33,6 @@ class TodoModule extends Module
 		super._onInitialisation();
 		//this._get( ITodoController ).initialize();
 	}
-	
-	/*override function _getRuntimeDependencies() : IRuntimeDependencies
-	{
-		var rd = new RuntimeDependencies();
-		//rd.addMappedDependencies( [ ITodoService ] );
-		return rd;
-	}*/
 }
 
 private class TodoModuleConfig extends StatelessModuleConfig

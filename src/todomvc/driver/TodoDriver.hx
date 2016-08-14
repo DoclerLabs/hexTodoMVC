@@ -27,6 +27,12 @@ class TodoDriver implements ITodoDriver implements IInjectorContainer
 		
 	}
 	
+	@PostConstruct
+	public function init() : Void
+	{
+		this._view.setController( this._controller );
+	}
+	
 	public function addTodo( item : TodoItem ) : Void
 	{
 		

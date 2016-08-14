@@ -19,6 +19,7 @@ class TodoModel implements ITodoModel implements IOutputOwner
 	
 	public function addTodo( item : TodoItem ) : Void
 	{
+		trace( 'TodoModel.addTodo:', item );
 		this.output.addTodo( item );
 	}
 	
