@@ -9,6 +9,7 @@ import todomvc.view.ITodoView;
  */
 class TodoViewJS implements ITodoView
 {
+	var _template 			: Template;
 	var _todoList 			: Element;
 	var _todoItemCounter 	: Element;
 	var _clearCompleted 	: Element;
@@ -25,13 +26,14 @@ class TodoViewJS implements ITodoView
 							toggleAll,
 							newTodo ) 
 	{
-		/*this._todoList 			= todoList;
+		this._template 			= new Template();
+		this._todoList 			= todoList;
 		this._todoItemCounter 	= todoItemCounter;
 		this._clearCompleted 	= clearCompleted;
 		this._main 				= main;
 		this._footer 			= footer;
 		this._toggleAll 		= toggleAll;
-		this._newTodo 			= newTodo;*/
+		this._newTodo 			= newTodo;
 	}
 	
 	public function clearCompletedButton( completedCount : Int, visible : Bool ) 

@@ -18,7 +18,7 @@ class Main
 			proxy.addListener( new hex.log.layout.TraceLayout() );
 			#end
 		#end
-		
+		trace( "yup" );
 		hex.compiler.parser.xml.XmlCompiler.readXmlFile( "configuration/context.xml", null, [ "browser" => true, "flashplayer" => false ] );
 	}
 }

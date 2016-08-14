@@ -1,17 +1,21 @@
 package todomvc.model;
 
+import hex.data.GUID;
+
 /**
  * ...
  * @author Francis Bourre
  */
 class TodoItem
 {
-	public var title : String;
-    public var completed : Bool;
+	public var id 			: String;
+	public var title 		: String;
+    public var completed 	: Bool;
 	
 	inline public function new( title : String, completed : Bool ) 
 	{
-		this.title = title;
-		this.completed = completed;
+		this.id 		= GUID.uuid();
+		this.title 		= title;
+		this.completed 	= completed;
 	}
 }
