@@ -499,58 +499,85 @@ configuration_js_TodoViewJS.prototype = {
 		});
 	}
 	,_initController: function() {
-		var _gthis = this;
-		$(this._newTodo).on("change",null,function(e) {
-			_gthis._controller.addItem(_gthis._newTodo.value);
-		});
-		$(this._clearCompleted).on("click",null,function(e1) {
-			_gthis._controller.removeCompletedItems();
-		});
-		$(this._toggleAll).on("click",null,function(e2) {
-			_gthis._controller.toggleAll(_gthis._toggleAll.checked);
-		});
-		$(this._todoList).delegate("li label","dblclick",function(e3) {
-			_gthis._controller.editItem(_gthis._itemID(e3.target));
-		});
-		$(this._todoList).delegate(".destroy","click",function(e4) {
-			_gthis._controller.removeItem(_gthis._itemID(e4.target));
-		});
-		$(this._todoList).delegate(".toggle","click",function(e5) {
-			_gthis._controller.toggleComplete(_gthis._itemID(e5.target),e5.target.checked);
-		});
+		$(this._newTodo).on("change",null,$bind(this,this._onNewTodo));
+		$(this._clearCompleted).on("click",null,$bind(this,this._onClearCompleted));
+		$(this._toggleAll).on("click",null,$bind(this,this._onToggleAll));
+		$(this._todoList).delegate("li label","dblclick",$bind(this,this._onEditItem));
+		$(this._todoList).delegate(".destroy","click",$bind(this,this._onRemoveItem));
+		$(this._todoList).delegate(".toggle","click",$bind(this,this._onToggleComplete));
+		$(this._todoList).delegate("li .edit","blur",$bind(this,this._onItemSave));
+		$(this._todoList).delegate("li .edit","keypress",$bind(this,this._onItemKeyPress));
+		$(this._todoList).delegate("li .edit","keyup",$bind(this,this._onEditItemCancel));
+	}
+	,_onNewTodo: function(e) {
+		this._controller.addItem(e.target.value);
+	}
+	,_onClearCompleted: function(e) {
+		this._controller.removeCompletedItems();
+	}
+	,_onToggleAll: function(e) {
+		this._controller.toggleAll(e.target.checked);
+	}
+	,_onEditItem: function(e) {
+		this._controller.editItem(this._itemID(e.target));
+	}
+	,_onRemoveItem: function(e) {
+		this._controller.removeItem(this._itemID(e.target));
+	}
+	,_onToggleComplete: function(e) {
+		this._controller.toggleComplete(this._itemID(e.target),e.target.checked);
+	}
+	,_onItemSave: function(e) {
+		var li = e.target;
+		if(li.dataset.iscanceled != null) {
+			this._controller.editItemSave(this._itemID(li),"" + li.value);
+		}
+	}
+	,_onItemKeyPress: function(e) {
+		if(e.keyCode == 13) {
+			e.target.blur();
+		}
+	}
+	,_onEditItemCancel: function(e) {
+		if(e.keyCode == 27) {
+			var li = e.target;
+			li.dataset.iscanceled = "true";
+			li.blur();
+			this._controller.editItemCancel(this._itemID(li));
+		}
 	}
 	,showEntries: function(entries) {
 		this._todoList.innerHTML = this._template.show(entries);
 	}
-	,removeItem: function(item) {
-		this._removeItem(item);
+	,removeItem: function(id) {
+		this._removeItem(id);
 	}
 	,updateElementCount: function(activeTodos) {
 		this._todoItemCounter.innerHTML = this._template.itemCounter(activeTodos);
 	}
-	,clearCompletedButton: function(parameter) {
-		this._clearCompletedButton(parameter.completed,parameter.visible);
+	,clearCompletedButton: function(completedCount,visible) {
+		this._clearCompletedButton(completedCount,visible);
 	}
-	,contentBlockVisibility: function(parameter) {
-		this._main.style.display = this._footer.style.display = parameter.visible?"block":"none";
+	,contentBlockVisibility: function(isVisible) {
+		this._main.style.display = this._footer.style.display = isVisible?"block":"none";
 	}
-	,toggleAll: function(parameter) {
-		this._toggleAll.checked = parameter.checked;
+	,toggleAll: function(isChecked) {
+		this._toggleAll.checked = isChecked;
 	}
-	,setFilter: function(parameter) {
-		this._setFilter(parameter);
+	,setFilter: function(page) {
+		this._setFilter(page);
 	}
 	,clearNewTodo: function() {
 		this._newTodo.value = "";
 	}
-	,elementComplete: function(parameter) {
-		this._elementComplete(parameter.id,parameter.completed);
+	,elementComplete: function(id,isCompleted) {
+		this._elementComplete(id,isCompleted);
 	}
-	,editItem: function(item) {
-		this._editItem(item.id,item.title);
+	,editItem: function(id,title) {
+		this._editItem(id,title);
 	}
-	,editItemDone: function(item) {
-		this._editItemDone(item.id,item.title);
+	,editItemDone: function(id,title) {
+		this._editItemDone(id,title);
 	}
 	,_removeItem: function(id) {
 		var elem = this.qs("[data-id=\"" + id + "\"]");
@@ -600,31 +627,6 @@ configuration_js_TodoViewJS.prototype = {
 				label.textContent = title;
 			}
 		}
-	}
-	,_bindItemEditDone: function() {
-		var _gthis = this;
-		$(this._todoList).delegate("li .edit","blur",function(e) {
-			var li = e.target;
-			if(li.dataset.iscanceled != null) {
-				_gthis._controller.editItemSave(_gthis._itemID(li),"" + li.value);
-			}
-		});
-		$(this._todoList).delegate("li .edit","keypress",function(e1) {
-			if(e1.keyCode == 13) {
-				e1.target.blur();
-			}
-		});
-	}
-	,_bindItemEditCancel: function() {
-		var _gthis = this;
-		$(this._todoList).delegate("li .edit","keyup",function(e) {
-			if(e.keyCode == 27) {
-				var li = e.target;
-				li.dataset.iscanceled = "true";
-				li.blur();
-				_gthis._controller.editItemCancel(_gthis._itemID(li));
-			}
-		});
 	}
 	,__class__: configuration_js_TodoViewJS
 };

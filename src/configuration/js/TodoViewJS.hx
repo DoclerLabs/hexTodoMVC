@@ -7,6 +7,7 @@ import js.html.InputElement;
 import js.html.LIElement;
 import js.jquery.JQuery;
 import todomvc.control.ITodoController;
+import todomvc.model.TodoItem;
 import todomvc.view.ITodoView;
 
 /**
@@ -43,60 +44,123 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._footer 			= cast footer;
 		this._toggleAll 		= cast toggleAll;
 		this._newTodo 			= cast newTodo;
-		
-		
 	}
 	
 	public function setController( controller : ITodoController ) : Void
 	{
 		this._controller = controller;
-		new JQuery( function():Void {this._initController(); } );
+		new JQuery( function() : Void { this._initController(); } );
 	}
 	
 	function _initController() : Void
 	{
-		new JQuery( this._newTodo ).on( 'change', function( e ) { this._controller.addItem( this._newTodo.value ); } );
-		new JQuery( this._clearCompleted ).on( 'click', function( e ) { this._controller.removeCompletedItems(); } );
-		new JQuery( this._toggleAll ).on( 'click', function( e ) { this._controller.toggleAll( this._toggleAll.checked ); } );
-		
-		new JQuery( this._todoList ).delegate( 'li label', 'dblclick', function( e ) { this._controller.editItem( this._itemID( cast e.target ) ); } );
-		new JQuery( this._todoList ).delegate( '.destroy', 'click', function( e ) { this._controller.removeItem( this._itemID( cast e.target ) ); } );
-		new JQuery( this._todoList ).delegate( '.toggle', 'click', function( e ) { this._controller.toggleComplete( this._itemID( cast e.target ), ( cast e.target ).checked ); } );
+		new JQuery( this._newTodo ).on( 'change', this._onNewTodo );
+		new JQuery( this._clearCompleted ).on( 'click', this._onClearCompleted );
+		new JQuery( this._toggleAll ).on( 'click', this._onToggleAll );
+		new JQuery( this._todoList ).delegate( 'li label', 'dblclick', this._onEditItem );
+		new JQuery( this._todoList ).delegate( '.destroy', 'click', this._onRemoveItem );
+		new JQuery( this._todoList ).delegate( '.toggle', 'click', this._onToggleComplete );
+		new JQuery( this._todoList ).delegate( 'li .edit', 'blur', this._onItemSave );
+		new JQuery( this._todoList ).delegate( 'li .edit', 'keypress', this._onItemKeyPress );
+		new JQuery( this._todoList ).delegate( 'li .edit', 'keyup', this._onEditItemCancel );
+	}
+	
+	function _onNewTodo( e : js.jquery.Event ) : Void
+	{
+		this._controller.addItem( ( cast e.target ).value ); 
+	}
+	
+	function _onClearCompleted( e : js.jquery.Event ) : Void
+	{
+		this._controller.removeCompletedItems();
+	}
+	
+	function _onToggleAll( e : js.jquery.Event ) : Void
+	{
+		this._controller.toggleAll( ( cast e.target ).checked );
+	}
+	
+	function _onEditItem( e : js.jquery.Event ) : Void
+	{
+		this._controller.editItem( this._itemID( cast e.target ) );
+	}
+	
+	function _onRemoveItem( e : js.jquery.Event ) : Void
+	{
+		this._controller.removeItem( this._itemID( cast e.target ) );
+	}
+	
+	function _onToggleComplete( e : js.jquery.Event ) : Void
+	{
+		this._controller.toggleComplete( this._itemID( cast e.target ), ( cast e.target ).checked );
+	}
+	
+	function _onItemSave( e : js.jquery.Event ) : Void
+	{
+		var li : LIElement = ( cast e.target );
+		if ( li.dataset.iscanceled != null ) 
+		{
+			this._controller.editItemSave( this._itemID( li ), "" + li.value );
+		}
+	}
+	
+	function _onItemKeyPress( e : js.jquery.Event ) : Void
+	{
+		if ( e.keyCode == 13 ) 
+		{
+			var li : LIElement = ( cast e.target );
+			// Remove the cursor from the input when you hit enter just like if it
+			// were a real form
+			li.blur();
+		}
+	}
+
+	function _onEditItemCancel( e : js.jquery.Event ) : Void
+	{
+		if ( e.keyCode == 27 ) 
+		{
+			var li : LIElement = ( cast e.target );
+			li.dataset.iscanceled = "true";
+			li.blur();
+
+			this._controller.editItemCancel( this._itemID( li ) );
+		}
 	}
 		
-	public function showEntries( entries ) : Void 
+	//
+	public function showEntries( entries : Array<TodoItem> ) : Void 
 	{
 		this._todoList.innerHTML = this._template.show( entries );
 	}
 	
-	public function removeItem( item ) : Void 
+	public function removeItem(  id : String ) : Void 
 	{
-		this._removeItem( item );
+		this._removeItem( id );
 	}
 	
-	public function updateElementCount( activeTodos ) : Void 
+	public function updateElementCount( activeTodos : Int ) : Void 
 	{
 		this._todoItemCounter.innerHTML = this._template.itemCounter( activeTodos );
 	}
 	
-	public function clearCompletedButton( parameter ) : Void 
+	public function clearCompletedButton( completedCount : Int, visible : Bool ) : Void 
 	{
-		this._clearCompletedButton( parameter.completed, parameter.visible );
+		this._clearCompletedButton( completedCount, visible );
 	}
 	
-	public function contentBlockVisibility( parameter ) : Void 
+	public function contentBlockVisibility( isVisible : Bool ) : Void 
 	{
-		this._main.style.display = this._footer.style.display = parameter.visible ? 'block' : 'none';
+		this._main.style.display = this._footer.style.display = isVisible ? 'block' : 'none';
 	}
 	
-	public function toggleAll( parameter ) : Void 
+	public function toggleAll( isChecked : Bool ) : Void 
 	{
-		this._toggleAll.checked = parameter.checked;
+		this._toggleAll.checked = isChecked;
 	}
 	
-	public function setFilter( parameter ) : Void
+	public function setFilter( page : String ) : Void
 	{
-		this._setFilter( parameter );
+		this._setFilter( page );
 	}
 	
 	public function clearNewTodo() : Void
@@ -104,19 +168,19 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._newTodo.value = '';
 	}
 	
-	public function elementComplete( parameter ) : Void 
+	public function elementComplete( id : String, isCompleted : Bool ) : Void 
 	{
-		this._elementComplete( parameter.id, parameter.completed );
+		this._elementComplete( id, isCompleted );
 	}
 	
-	public function editItem( item ) : Void
+	public function editItem( id : String, title : String ) : Void
 	{
-		this._editItem( item.id, item.title );
+		this._editItem( id, title );
 	}
 	
-	public function editItemDone( item ) : Void
+	public function editItemDone( id : String, title : String ) : Void
 	{
-		this._editItemDone( item.id, item.title );
+		this._editItemDone( id, title );
 	}
 	
 	function _removeItem( id : String ) : Void
@@ -142,7 +206,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._clearCompleted.style.display = visible ? 'block' : 'none';
 	}
 	
-	function _setFilter( currentPage ) : Void
+	function _setFilter( currentPage : String ) : Void
 	{
 		qs( '.filters .selected' ).className = '';
 		qs( '.filters [href="#/' + currentPage + '"]' ).className = 'selected';
@@ -202,46 +266,5 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 				label.textContent = title;
 			});*/
 		}
-	}
-	
-	function _bindItemEditDone() : Void
-	{
-		new JQuery( this._todoList ).delegate( 'li .edit', 'blur', 
-		function ( e ) 
-		{
-			var li : LIElement = ( cast e.target );
-			if ( li.dataset.iscanceled != null ) 
-			{
-				this._controller.editItemSave( this._itemID( li ), "" + li.value );
-			}
-		});
-
-		new JQuery( this._todoList ).delegate( 'li .edit', 'keypress', 
-		function ( e ) 
-		{
-			if ( e.keyCode == 13 ) 
-			{
-				var li : LIElement = ( cast e.target );
-				// Remove the cursor from the input when you hit enter just like if it
-				// were a real form
-				li.blur();
-			}
-		});
-	}
-
-	function _bindItemEditCancel() : Void
-	{
-		new JQuery( this._todoList ).delegate( 'li .edit', 'keyup', 
-		function ( e ) 
-		{
-			if ( e.keyCode == 27 ) 
-			{
-				var li : LIElement = ( cast e.target );
-				li.dataset.iscanceled = "true";
-				li.blur();
-
-				this._controller.editItemCancel( this._itemID( li ) );
-			}
-		});
 	}
 }
