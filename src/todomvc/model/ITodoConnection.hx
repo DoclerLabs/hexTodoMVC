@@ -17,7 +17,7 @@ interface ITodoConnection
 	
 	function clearCompletedButton( completedCount : Int, visible : Bool ) : Void ;
 	
-	function contentBlockVisibility( isVisible : Bool ) : Void;
+	function showFooter( isVisible : Bool ) : Void;
 	
 	function toggleAll( isChecked : Bool ) : Void;
 	

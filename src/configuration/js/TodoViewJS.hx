@@ -44,6 +44,8 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._footer 			= cast footer;
 		this._toggleAll 		= cast toggleAll;
 		this._newTodo 			= cast newTodo;
+		
+		this.showFooter( false );
 	}
 	
 	public function setController( controller : ITodoController ) : Void
@@ -65,7 +67,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		new JQuery( this._todoList ).delegate( 'li .edit', 'blur', this._onItemSave );
 		new JQuery( this._todoList ).delegate( 'li .edit', 'keypress', this._onItemKeyPress );
 		new JQuery( this._todoList ).delegate( 'li .edit', 'keyup', this._onEditItemCancel );
-		
 		new JQuery( Browser.window ).on( 'hashchange', _onHashChange );
 	}
 	
@@ -168,7 +169,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._clearCompletedButton( completedCount, visible );
 	}
 	
-	public function contentBlockVisibility( isVisible : Bool ) : Void 
+	public function showFooter( isVisible : Bool ) : Void 
 	{
 		this._main.style.display = this._footer.style.display = isVisible ? 'block' : 'none';
 	}

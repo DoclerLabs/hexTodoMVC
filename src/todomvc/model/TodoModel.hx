@@ -75,6 +75,27 @@ class TodoModel implements ITodoModel
 		}
 	}
 	
+	public function removeCompleted() : Void
+	{
+		var l = this._items.length;
+		var item = null;
+		while ( l-- > 0 )
+		{
+			item = this._items[ l ];
+			
+			if ( item.completed )
+			{
+				this._items.splice( l, 1 );
+				this.output.removeItem( item.id );
+			}
+		}
+		
+		if ( item != null )
+		{
+			this._updateCount();
+		}
+	}
+	
 	public function getTodo( id : String ) : TodoItem
 	{
 		for ( item in this._items )
@@ -95,6 +116,7 @@ class TodoModel implements ITodoModel
 			if ( item.id == id ) 
 			{
 				item.completed = isCompleted;
+				this.output.elementComplete( id, isCompleted );
 				this._updateCount();
 				break;
 			}
@@ -125,6 +147,6 @@ class TodoModel implements ITodoModel
 		this.output.updateElementCount( active );
 		this.output.clearCompletedButton( completed, completed > 0 );
 		this.output.toggleAll( completed == total );
-		this.output.contentBlockVisibility( total > 0 );
+		this.output.showFooter( total > 0 );
 	}
 }

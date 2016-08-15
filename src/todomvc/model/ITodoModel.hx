@@ -17,6 +17,7 @@ interface ITodoModel extends IOutputOwner
 	
 	function addTodo( item : TodoItem ) : Void;
 	function removeTodo( id : String ) : Void;
+	function removeCompleted() : Void;
 	
 	function getTodo( id : String ) : TodoItem;
 	function updateTodo( id : String, isCompleted : Bool ) : Void;

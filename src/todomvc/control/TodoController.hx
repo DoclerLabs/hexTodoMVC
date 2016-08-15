@@ -124,6 +124,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	public function removeCompletedItems() : Void
 	{
 		logger.debug( 'TodoController::removeCompletedItems' );
+		this.model.removeCompleted();
 	}
 	
 	/**
@@ -139,7 +140,6 @@ class TodoController implements ITodoController implements IInjectorContainer
 	{
 		logger.debug( 'TodoController::toggleComplete:' + id + ":" + isCompleted + ":" + silent );
 		this.model.updateTodo( id, isCompleted );
-		//this.model.getTodo( id ).completed = isCompleted;
 	}
 	
 	/**
