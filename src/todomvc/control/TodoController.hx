@@ -4,6 +4,7 @@ import hex.control.ICompletable;
 import hex.control.ResultResponder;
 import hex.di.IInjectorContainer;
 import hex.log.ILogger;
+import todomvc.model.IFilterModel;
 import todomvc.model.ITodoModel;
 import todomvc.model.TodoItem;
 
@@ -19,11 +20,20 @@ class TodoController implements ITodoController implements IInjectorContainer
 	public var model : ITodoModel;
 	
 	@Inject
+	public var filter : IFilterModel;
+	
+	@Inject
 	public var logger : ILogger;
 	
 	public function new() 
 	{
 		
+	}
+	
+	public function setFilter( filter : String ) : Void
+	{
+		logger.debug( 'TodoController::setFilter:' + filter );
+		this.filter.setFilter( filter );
 	}
 	
 	/**
@@ -67,19 +77,14 @@ class TodoController implements ITodoController implements IInjectorContainer
 		if ( newTodoTitle.length > 0  ) 
 		{
 			this.model.addTodo( new TodoItem( newTodoTitle, false ) );
-			/**
-				self.model.create(title, function () {
-				self.view.render('clearNewTodo');
-				self._filter(true);
-				});
-			 */
+			//this._filter(true);
 		}
 	}
 	
 	/*
 	 * Triggers the item editing mode.
 	 */
-	public function editItem( id : Int ) : Void
+	public function editItem( id : String ) : Void
 	{
 		logger.debug( 'TodoController::editItem:' + id );
 	}
@@ -87,7 +92,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	/*
 	 * Finishes the item editing mode successfully.
 	 */
-	public function editItemSave( id : Int, title : String ) : Void
+	public function editItemSave( id : String, title : String ) : Void
 	{
 		logger.debug( 'TodoController::editItemSave:' + id );
 	}
@@ -95,7 +100,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	/*
 	 * Cancels the item editing mode.
 	 */
-	public function editItemCancel( id : Int ) : Void
+	public function editItemCancel( id : String ) : Void
 	{
 		logger.debug( 'TodoController::editItemCancel:' + id );
 	}
@@ -107,9 +112,10 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 * @param {number} id The ID of the item to remove from the DOM and
 	 * storage
 	 */
-	public function removeItem( id : Int ) : Void
+	public function removeItem( id : String ) : Void
 	{
 		logger.debug( 'TodoController::removeItem:' + id );
+		this.model.removeTodo( id );
 	}
 	
 	/**
@@ -129,9 +135,11 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 *                          or not
 	 * @param {boolean|undefined} silent Prevent re-filtering the todo items
 	 */
-	public function toggleComplete( id : Int, completed : Dynamic, silent : Bool = true ) : Void
+	public function toggleComplete( id : String, isCompleted : Bool, silent : Bool = true ) : Void
 	{
-		logger.debug( 'TodoController::toggleComplete:' + id + ":" + completed + ":" + silent );
+		logger.debug( 'TodoController::toggleComplete:' + id + ":" + isCompleted + ":" + silent );
+		this.model.updateTodo( id, isCompleted );
+		//this.model.getTodo( id ).completed = isCompleted;
 	}
 	
 	/**

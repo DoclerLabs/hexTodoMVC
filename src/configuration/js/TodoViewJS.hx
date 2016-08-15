@@ -54,6 +54,8 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _initController() : Void
 	{
+		new JQuery( Browser.window ).on( 'hashchange', _onHashChange );
+		
 		new JQuery( this._newTodo ).on( 'change', this._onNewTodo );
 		new JQuery( this._clearCompleted ).on( 'click', this._onClearCompleted );
 		new JQuery( this._toggleAll ).on( 'click', this._onToggleAll );
@@ -63,6 +65,18 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		new JQuery( this._todoList ).delegate( 'li .edit', 'blur', this._onItemSave );
 		new JQuery( this._todoList ).delegate( 'li .edit', 'keypress', this._onItemKeyPress );
 		new JQuery( this._todoList ).delegate( 'li .edit', 'keyup', this._onEditItemCancel );
+		
+		new JQuery( Browser.window ).on( 'hashchange', _onHashChange );
+	}
+	
+	/**
+	 * UIs callbacks
+	 */
+	function _onHashChange( e : js.jquery.Event ) : Void
+	{
+		var location : String = ( cast e.target ).location.hash;
+		var route = location.split( '/' )[ 1 ];
+		this._controller.setFilter( route != null ? route : '' ); 
 	}
 	
 	function _onNewTodo( e : js.jquery.Event ) : Void
@@ -128,6 +142,12 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	}
 		
 	//
+	public function changeFilter( filter : String ) : Void
+	{
+		this._setFilter( filter );
+	}
+	
+	//
 	public function showEntries( entries : Array<TodoItem> ) : Void 
 	{
 		this._todoList.innerHTML = this._template.show( entries );
@@ -156,11 +176,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	public function toggleAll( isChecked : Bool ) : Void 
 	{
 		this._toggleAll.checked = isChecked;
-	}
-	
-	public function setFilter( page : String ) : Void
-	{
-		this._setFilter( page );
 	}
 	
 	public function clearNewTodo() : Void
@@ -194,22 +209,23 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	}
 	
 	//
-	function _itemID( element ) : Int
+	function _setFilter( currentFilter : String ) : Void
 	{
-		var li : LIElement = cast new JQuery( element ).parent( 'li' );
-		return Std.parseInt( li.dataset.id );
+		this._qs( '.filters .selected' ).className = '';
+		this._qs( '.filters [href="#/' + currentFilter + '"]' ).className = 'selected';
+	}
+	
+	function _itemID( element ) : String
+	{
+		//var li : LIElement = cast new JQuery( element ).parent( 'li' );
+		//return Std.parseInt( li.dataset.id );
+		return new JQuery( element ).parent().parent().attr( 'data-id' );
 	}
 
 	function _clearCompletedButton( completedTodos : Int, visible : Bool ) : Void
 	{
 		this._clearCompleted.innerHTML = this._template.clearCompletedButton( completedTodos );
 		this._clearCompleted.style.display = visible ? 'block' : 'none';
-	}
-	
-	function _setFilter( currentPage : String ) : Void
-	{
-		this._qs( '.filters .selected' ).className = '';
-		this._qs( '.filters [href="#/' + currentPage + '"]' ).className = 'selected';
 	}
 
 	function _elementComplete( id, completed ) : Void

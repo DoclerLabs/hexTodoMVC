@@ -9,6 +9,8 @@ import todomvc.control.ITodoController;
 import todomvc.control.TodoController;
 import todomvc.driver.ITodoDriver;
 import todomvc.driver.TodoDriver;
+import todomvc.model.FilterModel;
+import todomvc.model.IFilterModel;
 import todomvc.model.ITodoModel;
 import todomvc.model.TodoModel;
 
@@ -41,8 +43,11 @@ private class TodoModuleConfig extends StatelessModuleConfig
 	{
 		this.mapController( ITodoController, TodoController );
 		this.mapModel( ITodoModel, TodoModel );
+		this.mapModel( IFilterModel, FilterModel );
 		this.mapDriver( ITodoDriver, TodoDriver );
 		
-		this.get( ITodoDriver ).input.plug( this.get( ITodoModel ).output );
+		var view = this.get( ITodoDriver ).view;
+		this.get( ITodoModel ).output.connect( view );
+		this.get( IFilterModel ).output.connect( view );
 	}
 }

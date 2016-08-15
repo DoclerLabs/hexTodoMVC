@@ -1,12 +1,12 @@
 package configuration.flash;
 
-import todomvc.view.ITodoView;
+import todomvc.model.ITodoConnection;
 
 /**
  * ...
  * @author Francis Bourre
  */
-class TodoViewFlash implements ITodoView
+class TodoViewFlash implements ITodoConnection
 {
 
 	public function new() 

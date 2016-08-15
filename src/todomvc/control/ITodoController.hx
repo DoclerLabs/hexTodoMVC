@@ -8,6 +8,8 @@ import todomvc.model.TodoItem;
  */
 interface ITodoController 
 {
+	function setFilter( filter : String ) : Void;
+	
 	function showAll() : ICompletable<Array<TodoItem>>;
 	
 	/**
@@ -29,17 +31,17 @@ interface ITodoController
 	/*
 	 * Triggers the item editing mode.
 	 */
-	function editItem( id : Int ) : Void;
+	function editItem( id : String ) : Void;
 	
 	/*
 	 * Finishes the item editing mode successfully.
 	 */
-	function editItemSave( id : Int, title : String ) : Void;
+	function editItemSave( id : String, title : String ) : Void;
 	
 	/*
 	 * Cancels the item editing mode.
 	 */
-	function editItemCancel( id : Int ) : Void;
+	function editItemCancel( id : String ) : Void;
 	
 	/**
 	 * By giving it an ID it'll find the DOM element matching that ID,
@@ -48,7 +50,7 @@ interface ITodoController
 	 * @param {number} id The ID of the item to remove from the DOM and
 	 * storage
 	 */
-	function removeItem( id : Int ) : Void;
+	function removeItem( id : String ) : Void;
 	
 	/**
 	 * Will remove all completed items from the DOM and storage.
@@ -64,7 +66,7 @@ interface ITodoController
 	 *                          or not
 	 * @param {boolean|undefined} silent Prevent re-filtering the todo items
 	 */
-	function toggleComplete( id : Int, completed : Dynamic, silent : Bool = true ) : Void;
+	function toggleComplete( id : String, isCompleted : Bool, silent : Bool = true ) : Void;
 	
 	/**
 	 * Will toggle ALL checkboxes' on/off state and completeness of models.
