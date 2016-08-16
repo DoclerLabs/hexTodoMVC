@@ -46,9 +46,8 @@ class TodoDriver implements ITodoDriver implements IInjectorContainer
 		}
 	}
 	
-	/*
 	@Forward( view.showEntries ) 			public function onShowEntries( entries : Array<TodoItem> ) : Void {}
-	@Forward( view.removeItem ) 			public function onRemoveItem( id : String ) : Void
+	@Forward( view.removeItem ) 			public function onRemoveItem( id : String ) : Void {}
 	@Forward( view.updateItemCount ) 		public function onUpdateItemCount( activeItems : Int ) : Void {}
 	@Forward( view.clearCompletedButton ) 	public function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void {}
 	@Forward( view.changeFooterVisibility ) public function onChangeFooterVisibility( isVisible : Bool ) : Void {}
@@ -57,55 +56,4 @@ class TodoDriver implements ITodoDriver implements IInjectorContainer
 	@Forward( view.setItemCompleted ) 		public function onSetItemCompleted( id : String, isCompleted : Bool ) : Void {}
 	@Forward( view.editItem ) 				public function onEditItem( id : String, title : String ) : Void {}
 	@Forward( view.editItemDone ) 			public function onEditItemDone( id : String, title : String ) : Void {}
-	*/
-	
-	public function onShowEntries( entries : Array<TodoItem> ) : Void
-	{
-		this.view.showEntries( entries );
-	}
-	
-	public function onRemoveItem( id : String ) : Void
-	{
-		this.view.removeItem( id );
-	}
-	
-	public function onUpdateItemCount( activeItems : Int ) : Void
-	{
-		this.view.updateItemCount( activeItems );
-	}
-	
-	public function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void
-	{
-		this.view.clearCompletedButton( completedCount, visible );
-	}
-	
-	public function onChangeFooterVisibility( isVisible : Bool ) : Void
-	{
-		this.view.changeFooterVisibility( isVisible );
-	}
-	
-	public function onToggleAll( isChecked : Bool ) : Void
-	{
-		this.view.toggleAll( isChecked );
-	}
-	
-	public function onClearNewTodo() : Void
-	{
-		this.view.clearNewTodo();
-	}
-	
-	public function onSetItemCompleted( id : String, isCompleted : Bool ) : Void
-	{
-		this.view.setItemCompleted( id, isCompleted );
-	}
-	
-	public function onEditItem( id : String, title : String ) : Void
-	{
-		this.view.editItem( id, title );
-	}
-	
-	public function onEditItemDone( id : String, title : String ) : Void
-	{
-		this.view.editItemDone( id, title );
-	}
 }
