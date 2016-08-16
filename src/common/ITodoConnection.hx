@@ -11,11 +11,11 @@ interface ITodoConnection
 	
 	function removeItem( id : String ) : Void;
 	
-	function updateElementCount( activeTodos : Int ) : Void;
+	function updateItemCount( activeItems : Int ) : Void;
 	
 	function clearCompletedButton( completedCount : Int, visible : Bool ) : Void ;
 	
-	function showFooter( isVisible : Bool ) : Void;
+	function setFooterVisibility( isVisible : Bool ) : Void;
 	
 	function toggleAll( isChecked : Bool ) : Void;
 	

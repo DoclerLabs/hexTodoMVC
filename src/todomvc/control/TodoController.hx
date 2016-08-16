@@ -131,6 +131,8 @@ class TodoController implements ITodoController implements IInjectorContainer
 		#if debug
 		logger.debug( ['TodoController::editItemCancel:', id] );
 		#end
+		
+		this.model.cancelEdition( id );
 	}
 	
 	/**

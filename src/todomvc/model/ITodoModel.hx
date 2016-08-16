@@ -22,4 +22,5 @@ interface ITodoModel extends IOutputOwner
 	function editTodo( id : String ) : Void;
 	function updateTodo( id : String, isCompleted : Bool ) : Void;
 	function editTodoTitle( id : String, title : String ) : Void;
+	function cancelEdition( id : String ) : Void;
 }

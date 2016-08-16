@@ -161,6 +161,17 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		this.output.editItemDone( id, title );
 	}
 	
+	public function cancelEdition( id : String ) : Void
+	{
+		#if debug
+		logger.debug( ['TodoModel.cancelEdition:', id] );
+		#end
+		
+		var todo = this._getTodo( id );
+		this._updateCount();
+		this.output.editItemDone( id, todo.title );
+	}
+	
 	//private
 	function _getTodo( id : String ) : TodoItem
 	{
@@ -181,28 +192,27 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		logger.debug( ['TodoModel._updateCount'] );
 		#end
 		
-		var completed 	= 0;
-		var active 		= 0;
-		var total 		= 0;
+		var completedItemCount 	= 0;
+		var activeItemCount 	= 0;
 		
 		for ( item in this._items )
 		{
 			if ( item.completed ) 
 			{
-				completed++;
+				completedItemCount++;
 			} 
 			else 
 			{
-				active++;
+				activeItemCount++;
 			}
-				
-			total++;
 		}
 		
-		var todos = this.getAllTodos();
-		this.output.updateElementCount( active );
-		this.output.clearCompletedButton( completed, completed > 0 );
-		this.output.toggleAll( completed == total );
-		this.output.showFooter( total > 0 );
+		var itemCount 	= completedItemCount + activeItemCount;
+		var todos 		= this.getAllTodos();
+		
+		this.output.updateItemCount( activeItemCount );
+		this.output.clearCompletedButton( completedItemCount, completedItemCount > 0 );
+		this.output.toggleAll( completedItemCount == itemCount );
+		this.output.setFooterVisibility( itemCount > 0 );
 	}
 }
