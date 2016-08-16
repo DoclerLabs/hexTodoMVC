@@ -1,4 +1,4 @@
-package configuration.flash;
+package flash;
 
 import common.ITodoConnection;
 
@@ -8,10 +8,8 @@ import common.ITodoConnection;
  */
 class TodoViewFlash implements ITodoConnection
 {
-
 	public function new() 
 	{
 		
 	}
-	
 }

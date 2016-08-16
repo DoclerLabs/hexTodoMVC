@@ -1,5 +1,7 @@
 package js;
 
+import common.Filter;
+import common.TodoItem;
 import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import js.Browser;
@@ -8,8 +10,6 @@ import js.html.InputElement;
 import js.html.LIElement;
 import js.jquery.JQuery;
 import todomvc.control.ITodoController;
-import common.Filter;
-import common.TodoItem;
 import todomvc.view.ITodoView;
 
 /**
@@ -164,9 +164,9 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		#end
 		
 		var li : LIElement = ( cast e.target );
-		if ( li.dataset.iscanceled != null ) 
+		if ( li.dataset.iscanceled != 'undefined' ) 
 		{
-			this._controller.editItemSave( this._itemID( li ), "" + li.value );
+			this._controller.editItemSave( new JQuery( li ).parent().attr( 'data-id' ), "" + li.value );
 		}
 	}
 	
@@ -179,8 +179,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		if ( e.keyCode == 13 ) 
 		{
 			var li : LIElement = ( cast e.target );
-			// Remove the cursor from the input when you hit enter just like if it
-			// were a real form
 			li.blur();
 		}
 	}
@@ -291,8 +289,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _itemID( element ) : String
 	{
-		//var li : LIElement = cast new JQuery( element ).parent( 'li' );
-		//return Std.parseInt( li.dataset.id );
 		return new JQuery( element ).parent().parent().attr( 'data-id' );
 	}
 
@@ -319,6 +315,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 
 	function _editItem( id, title ) : Void
 	{
+		trace( '_editItem', id, title );
 		var listItem = this._qs('[data-id="' + id + '"]');
 
 		if ( listItem != null ) 
@@ -340,10 +337,8 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 
 		if ( listItem != null ) 
 		{
-			//var input : InputElement = qs( 'input.edit', listItem );
 			var input : InputElement = cast listItem.querySelector( 'input.edit' );
 			listItem.removeChild( input );
-			//listItem.className = listItem.className.replace('editing', '');
 			listItem.className = listItem.className.split( 'editing' ).join( '' );
 
 			var list = listItem.querySelectorAll( 'label' );
@@ -351,10 +346,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 			{
 				( cast label ).textContent = title;
 			}
-
-			/*qsa('label', listItem).forEach(function (label) {
-				label.textContent = title;
-			});*/
 		}
 	}
 }

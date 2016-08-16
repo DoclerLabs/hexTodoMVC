@@ -86,7 +86,6 @@ class TodoController implements ITodoController implements IInjectorContainer
 		#end
 		
 		var newTodoTitle = title.trim();
-		
 		if ( newTodoTitle.length > 0  ) 
 		{
 			this.model.addTodo( new TodoItemVO( newTodoTitle, false ) );
@@ -99,8 +98,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	public function editItem( id : String ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoController::editItem:' + id] );
+		logger.debug( ['TodoController::editItem:', id] );
 		#end
+		this.model.editTodo( id );
 	}
 	
 	/*
@@ -109,8 +109,18 @@ class TodoController implements ITodoController implements IInjectorContainer
 	public function editItemSave( id : String, title : String ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoController::editItemSave:' + id] );
+		logger.debug( ['TodoController::editItemSave:', id, title] );
 		#end
+		
+		var updatedTodoTitle = title.trim();
+		if ( updatedTodoTitle.length > 0 ) 
+		{
+			this.model.editTodoTitle( id, title );
+
+		} else 
+		{
+			this.removeItem( id );
+		}
 	}
 	
 	/*

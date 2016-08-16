@@ -1,7 +1,5 @@
 package common;
 
-import hex.data.GUID;
-
 /**
  * ...
  * @author Francis Bourre
