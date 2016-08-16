@@ -1,6 +1,7 @@
-package configuration.js;
+package js;
 
 import hex.di.IInjectorContainer;
+import hex.log.ILogger;
 import js.Browser;
 import js.html.Element;
 import js.html.InputElement;
@@ -16,8 +17,11 @@ import todomvc.view.ITodoView;
  */
 class TodoViewJS implements ITodoView implements IInjectorContainer
 {
+	@Inject
+	public var logger 		: ILogger;
+	
 	var _controller 		: ITodoController;
-	var _qs 					: String -> Element = Browser.document.querySelector;
+	var _qs 				: String -> Element = Browser.document.querySelector;
 	
 	var _template 			: Template;
 	var _todoList 			: InputElement;
@@ -50,14 +54,21 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	public function setController( controller : ITodoController ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoModel.setController:', controller] );
+		#end
+		
 		this._controller = controller;
-		new JQuery( function() : Void { this._initController(); } );
+		new JQuery( function() : Void { this._initJQuery(); } );
 	}
 	
-	function _initController() : Void
+	function _initJQuery() : Void
 	{
-		new JQuery( Browser.window ).on( 'hashchange', _onHashChange );
+		#if debug
+		logger.debug( ['TodoViewJS._initJQuery'] );
+		#end
 		
+		new JQuery( Browser.window ).on( 'hashchange', _onHashChange );
 		new JQuery( this._newTodo ).on( 'change', this._onNewTodo );
 		new JQuery( this._clearCompleted ).on( 'click', this._onClearCompleted );
 		new JQuery( this._toggleAll ).on( 'click', this._onToggleAll );
@@ -75,6 +86,10 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	 */
 	function _onHashChange( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onHashChange', e] );
+		#end
+		
 		var location : String = ( cast e.target ).location.hash;
 		var route = location.split( '/' )[ 1 ];
 		this._controller.setFilter( route != null ? route : '' ); 
@@ -82,36 +97,64 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _onNewTodo( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onNewTodo', e] );
+		#end
+		
 		this._controller.addItem( ( cast e.target ).value ); 
 	}
 	
 	function _onClearCompleted( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onClearCompleted', e] );
+		#end
+		
 		this._controller.removeCompletedItems();
 	}
 	
 	function _onToggleAll( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onToggleAll', e] );
+		#end
+		
 		this._controller.toggleAll( ( cast e.target ).checked );
 	}
 	
 	function _onEditItem( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onEditItem', e] );
+		#end
+		
 		this._controller.editItem( this._itemID( cast e.target ) );
 	}
 	
 	function _onRemoveItem( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onRemoveItem', e] );
+		#end
+		
 		this._controller.removeItem( this._itemID( cast e.target ) );
 	}
 	
 	function _onToggleComplete( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onToggleComplete', e] );
+		#end
+		
 		this._controller.toggleComplete( this._itemID( cast e.target ), ( cast e.target ).checked );
 	}
 	
 	function _onItemSave( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onItemSave', e] );
+		#end
+		
 		var li : LIElement = ( cast e.target );
 		if ( li.dataset.iscanceled != null ) 
 		{
@@ -121,6 +164,10 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	function _onItemKeyPress( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onItemKeyPress', e] );
+		#end
+		
 		if ( e.keyCode == 13 ) 
 		{
 			var li : LIElement = ( cast e.target );
@@ -132,6 +179,10 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 
 	function _onEditItemCancel( e : js.jquery.Event ) : Void
 	{
+		#if debug
+		logger.debug( ['TodoViewJS._onEditItemCancel', e] );
+		#end
+		
 		if ( e.keyCode == 27 ) 
 		{
 			var li : LIElement = ( cast e.target );
@@ -142,13 +193,17 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		}
 	}
 		
-	//
+	/**
+	 * IFilterConnection implementation
+	 */
 	public function changeFilter( filter : String ) : Void
 	{
 		this._setFilter( filter );
 	}
 	
-	//
+	/**
+	 * ITodoConnection implementation
+	 */
 	public function showEntries( entries : Array<TodoItem> ) : Void 
 	{
 		this._todoList.innerHTML = this._template.show( entries );
@@ -209,7 +264,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		}
 	}
 	
-	//
+	//private
 	function _setFilter( currentFilter : String ) : Void
 	{
 		this._qs( '.filters .selected' ).className = '';

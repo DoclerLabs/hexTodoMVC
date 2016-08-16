@@ -29,7 +29,7 @@
 		<argument value=".new-todo"/>
 	</div>
 	
-	<view id="view" type="configuration.js.TodoViewJS">
+	<view id="view" type="js.TodoViewJS">
 		<argument ref="todoList"/>
 		<argument ref="todoItemCounter"/>
 		<argument ref="clearCompleted"/>

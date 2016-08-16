@@ -1,4 +1,4 @@
-package configuration.js;
+package js;
 
 import todomvc.model.TodoItem;
 

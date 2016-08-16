@@ -32,7 +32,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	
 	public function setFilter( filter : String ) : Void
 	{
-		logger.debug( 'TodoController::setFilter:' + filter );
+		#if debug
+		logger.debug( ['TodoController::setFilter:', filter] );
+		#end
 		this.filter.setFilter( filter );
 	}
 	
@@ -42,7 +44,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function showAll() : ICompletable<Array<TodoItem>>
 	{
-		logger.debug( 'TodoController::showAll' );
+		#if debug
+		logger.debug( ['TodoController::showAll'] );
+		#end
 		return new ResultResponder( this.model.getAllTodos() );
 	}
 	
@@ -51,7 +55,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function showActive() : ICompletable<Array<TodoItem>>
 	{
-		logger.debug( 'TodoController::showActive' );
+		#if debug
+		logger.debug( ['TodoController::showActive'] );
+		#end
 		return new ResultResponder( this.model.getActiveTodos() );
 	}
 	
@@ -60,7 +66,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function showCompleted() : ICompletable<Array<TodoItem>>
 	{
-		logger.debug( 'TodoController::showCompleted' );
+		#if debug
+		logger.debug( ['TodoController::showCompleted'] );
+		#end
 		return new ResultResponder( this.model.getCompletedTodos() );
 	}
 	
@@ -70,7 +78,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function addItem( title : String ) : Void
 	{
-		logger.debug( 'TodoController::addItem:' + title );
+		#if debug
+		logger.debug( ['TodoController::addItem:' + title] );
+		#end
 		
 		var newTodoTitle = title.trim();
 		
@@ -86,7 +96,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItem( id : String ) : Void
 	{
-		logger.debug( 'TodoController::editItem:' + id );
+		#if debug
+		logger.debug( ['TodoController::editItem:' + id] );
+		#end
 	}
 	
 	/*
@@ -94,7 +106,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItemSave( id : String, title : String ) : Void
 	{
-		logger.debug( 'TodoController::editItemSave:' + id );
+		#if debug
+		logger.debug( ['TodoController::editItemSave:' + id] );
+		#end
 	}
 	
 	/*
@@ -102,7 +116,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function editItemCancel( id : String ) : Void
 	{
-		logger.debug( 'TodoController::editItemCancel:' + id );
+		#if debug
+		logger.debug( ['TodoController::editItemCancel:', id] );
+		#end
 	}
 	
 	/**
@@ -114,7 +130,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function removeItem( id : String ) : Void
 	{
-		logger.debug( 'TodoController::removeItem:' + id );
+		#if debug
+		logger.debug( ['TodoController::removeItem:', id] );
+		#end
 		this.model.removeTodo( id );
 	}
 	
@@ -123,7 +141,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function removeCompletedItems() : Void
 	{
-		logger.debug( 'TodoController::removeCompletedItems' );
+		#if debug
+		logger.debug( ['TodoController::removeCompletedItems'] );
+		#end
 		this.model.removeCompleted();
 	}
 	
@@ -138,7 +158,9 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function toggleComplete( id : String, isCompleted : Bool, silent : Bool = true ) : Void
 	{
-		logger.debug( 'TodoController::toggleComplete:' + id + ":" + isCompleted + ":" + silent );
+		#if debug
+		logger.debug( ['TodoController::toggleComplete:', id, isCompleted, silent] );
+		#end
 		this.model.updateTodo( id, isCompleted );
 	}
 	
@@ -148,6 +170,8 @@ class TodoController implements ITodoController implements IInjectorContainer
 	 */
 	public function toggleAll( isCompleted : Bool ) : Void
 	{
-		logger.debug( 'TodoController::toggleAll:' + isCompleted );
+		#if debug
+		logger.debug( ['TodoController::toggleAll:', isCompleted] );
+		#end
 	}
 }
