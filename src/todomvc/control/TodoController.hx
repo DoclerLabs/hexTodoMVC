@@ -1,12 +1,14 @@
 package todomvc.control;
 
+import common.Filter;
+import common.TodoItem;
 import hex.control.ICompletable;
 import hex.control.ResultResponder;
+import hex.data.GUID;
 import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import todomvc.model.IFilterModel;
 import todomvc.model.ITodoModel;
-import todomvc.model.TodoItem;
 
 using StringTools;
 
@@ -20,7 +22,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 	public var model : ITodoModel;
 	
 	@Inject
-	public var filter : IFilterModel;
+	public var filterModel : IFilterModel;
 	
 	@Inject
 	public var logger : ILogger;
@@ -30,12 +32,13 @@ class TodoController implements ITodoController implements IInjectorContainer
 		
 	}
 	
-	public function setFilter( filter : String ) : Void
+	public function setFilter( filter : Filter ) : Void
 	{
 		#if debug
 		logger.debug( ['TodoController::setFilter:', filter] );
 		#end
-		this.filter.setFilter( filter );
+		
+		this.filterModel.setFilter( filter );
 	}
 	
 	/**
@@ -86,8 +89,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 		
 		if ( newTodoTitle.length > 0  ) 
 		{
-			this.model.addTodo( new TodoItem( newTodoTitle, false ) );
-			//this._filter(true);
+			this.model.addTodo( new TodoItemVO( newTodoTitle, false ) );
 		}
 	}
 	
@@ -173,5 +175,19 @@ class TodoController implements ITodoController implements IInjectorContainer
 		#if debug
 		logger.debug( ['TodoController::toggleAll:', isCompleted] );
 		#end
+	}
+}
+
+private class TodoItemVO
+{
+	public var id 			: String;
+	public var title 		: String;
+    public var completed 	: Bool;
+	
+	inline public function new( title : String, completed : Bool ) 
+	{
+		this.id 		= GUID.uuid();
+		this.title 		= title;
+		this.completed 	= completed;
 	}
 }

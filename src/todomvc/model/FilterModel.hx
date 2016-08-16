@@ -1,5 +1,8 @@
 package todomvc.model;
 
+import common.Filter;
+import common.IFilterConnection;
+import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import hex.mdvc.model.IOutput;
 
@@ -7,7 +10,7 @@ import hex.mdvc.model.IOutput;
  * ...
  * @author Francis Bourre
  */
-class FilterModel implements IFilterModel
+class FilterModel implements IFilterModel implements IInjectorContainer
 {
 	@Inject
 	public var logger : ILogger;
@@ -15,14 +18,14 @@ class FilterModel implements IFilterModel
 	@Output
 	public var output( default, never ) : IOutput<IFilterConnection>;
 	
-	var _currentFilter : String = "";
+	var _currentFilter : Filter;
 	
-	public function new( route : String = "" ) 
+	public function new() 
 	{
-		this._currentFilter = route;
+		this._currentFilter = Filter.ALL;
 	}
 	
-	inline public function setFilter( filter : String = "" ) : Void
+	inline public function setFilter( filter : Filter ) : Void
 	{
 		#if debug
 		logger.debug( ['FilterModel.setFilter:', filter] );
@@ -32,7 +35,7 @@ class FilterModel implements IFilterModel
 		this.output.changeFilter( this._currentFilter );
 	}
 	
-	inline public function getFilter() : String
+	inline public function getFilter() : Filter
 	{
 		#if debug
 		logger.debug( ['FilterModel.getFilter'] );

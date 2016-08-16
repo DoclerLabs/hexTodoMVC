@@ -1,6 +1,6 @@
 package todomvc.service;
 
-import todomvc.model.TodoItem;
+import common.TodoItem;
 
 /**
  * @author Francis Bourre

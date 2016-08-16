@@ -1,8 +1,9 @@
 package todomvc.model;
 
+import common.TodoItem;
 import hex.mdvc.model.IOutput;
 import hex.mdvc.model.IOutputOwner;
-import todomvc.model.ITodoConnection;
+import common.ITodoConnection;
 
 /**
  * @author Francis Bourre

@@ -8,7 +8,8 @@ import js.html.InputElement;
 import js.html.LIElement;
 import js.jquery.JQuery;
 import todomvc.control.ITodoController;
-import todomvc.model.TodoItem;
+import common.Filter;
+import common.TodoItem;
 import todomvc.view.ITodoView;
 
 /**
@@ -92,7 +93,14 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		
 		var location : String = ( cast e.target ).location.hash;
 		var route = location.split( '/' )[ 1 ];
-		this._controller.setFilter( route != null ? route : '' ); 
+		
+		var filter = switch( route )
+		{
+			case "active": Filter.ACTIVE;
+			case "completed": Filter.COMPLETED;
+			case _: Filter.ALL;
+		}
+		this._controller.setFilter( filter ); 
 	}
 	
 	function _onNewTodo( e : js.jquery.Event ) : Void
@@ -192,13 +200,23 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 			this._controller.editItemCancel( this._itemID( li ) );
 		}
 	}
-		
+	
 	/**
-	 * IFilterConnection implementation
+	 * ITodoView implementation
 	 */
-	public function changeFilter( filter : String ) : Void
+	public function selectAllFilterButton() : Void
 	{
-		this._setFilter( filter );
+		this._setFilter( '' );
+	}
+	
+	public function selectActiveFilterButton() : Void
+	{
+		this._setFilter( 'active' );
+	}
+	
+	public function selectCompletedFilterButton() : Void
+	{
+		this._setFilter( 'completed' );
 	}
 	
 	/**

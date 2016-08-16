@@ -1,5 +1,7 @@
 package todomvc.model;
 
+import common.Filter;
+import common.IFilterConnection;
 import hex.mdvc.model.IOutput;
 import hex.mdvc.model.IOutputOwner;
 
@@ -11,7 +13,7 @@ interface IFilterModel extends IOutputOwner
 {
 	var output( default, never ) : IOutput<IFilterConnection>;
 	
-	function setFilter( filter : String = "All" ) : Void;
+	function setFilter( filter : Filter ) : Void;
 	
-	function getFilter() : String;
+	function getFilter() : Filter;
 }

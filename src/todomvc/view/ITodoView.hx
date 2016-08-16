@@ -1,12 +1,18 @@
 package todomvc.view;
 
-import todomvc.model.ITodoConnection;
-import todomvc.model.IFilterConnection;
+import common.ITodoConnection;
+import todomvc.control.ITodoController;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoView extends IFilterConnection extends ITodoConnection
+interface ITodoView extends ITodoConnection
 {
+	function setController( controller : ITodoController ) : Void;
 	
+	function selectAllFilterButton() : Void;
+	
+	function selectActiveFilterButton() : Void;
+	
+	function selectCompletedFilterButton() : Void;
 }

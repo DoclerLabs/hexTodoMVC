@@ -1,6 +1,6 @@
 package js;
 
-import todomvc.model.TodoItem;
+import common.TodoItem;
 
 using StringTools;
 

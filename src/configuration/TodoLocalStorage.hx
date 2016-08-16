@@ -1,6 +1,6 @@
 package configuration;
 
-import todomvc.model.TodoItem;
+import common.TodoItem;
 import todomvc.service.ITodoService;
 
 /**

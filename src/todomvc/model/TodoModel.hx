@@ -1,5 +1,7 @@
 package todomvc.model;
 
+import common.ITodoConnection;
+import common.TodoItem;
 import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import hex.mdvc.model.IOutput;

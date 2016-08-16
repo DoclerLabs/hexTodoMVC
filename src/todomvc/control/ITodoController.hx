@@ -1,14 +1,15 @@
 package todomvc.control;
 
 import hex.control.ICompletable;
-import todomvc.model.TodoItem;
+import common.Filter;
+import common.TodoItem;
 
 /**
  * @author Francis Bourre
  */
 interface ITodoController 
 {
-	function setFilter( filter : String ) : Void;
+	function setFilter( filter : Filter ) : Void;
 	
 	function showAll() : ICompletable<Array<TodoItem>>;
 	

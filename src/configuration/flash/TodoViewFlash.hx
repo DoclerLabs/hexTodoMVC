@@ -1,6 +1,6 @@
 package configuration.flash;
 
-import todomvc.model.ITodoConnection;
+import common.ITodoConnection;
 
 /**
  * ...

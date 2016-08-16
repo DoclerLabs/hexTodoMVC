@@ -1,4 +1,4 @@
-package todomvc.model;
+package common;
 
 import todomvc.control.ITodoController;
 
@@ -7,8 +7,6 @@ import todomvc.control.ITodoController;
  */
 interface ITodoConnection 
 {
-	function setController( controller : ITodoController ) : Void;
-	
 	function showEntries( entries : Array<TodoItem> ) : Void;
 	
 	function removeItem( id : String ) : Void;
