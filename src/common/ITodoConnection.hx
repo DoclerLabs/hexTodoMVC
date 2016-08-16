@@ -7,23 +7,23 @@ import todomvc.control.ITodoController;
  */
 interface ITodoConnection 
 {
-	function showEntries( entries : Array<TodoItem> ) : Void;
+	function onShowEntries( entries : Array<TodoItem> ) : Void;
 	
-	function removeItem( id : String ) : Void;
+	function onRemoveItem( id : String ) : Void;
 	
-	function updateItemCount( activeItems : Int ) : Void;
+	function onUpdateItemCount( activeItems : Int ) : Void;
 	
-	function clearCompletedButton( completedCount : Int, visible : Bool ) : Void ;
+	function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void ;
 	
-	function setFooterVisibility( isVisible : Bool ) : Void;
+	function onChangeFooterVisibility( isVisible : Bool ) : Void;
 	
-	function toggleAll( isChecked : Bool ) : Void;
+	function onToggleAll( isChecked : Bool ) : Void;
 	
-	function clearNewTodo() : Void;
+	function onClearNewTodo() : Void;
 	
-	function elementComplete( id : String, isCompleted : Bool ) : Void;
+	function onSetItemCompleted( id : String, isCompleted : Bool ) : Void;
 	
-	function editItem( id : String, title : String ) : Void;
+	function onEditItem( id : String, title : String ) : Void;
 	
-	function editItemDone( id : String, title : String ) : Void;
+	function onEditItemDone( id : String, title : String ) : Void;
 }

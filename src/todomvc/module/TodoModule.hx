@@ -47,7 +47,7 @@ private class TodoModuleConfig extends StatelessModuleConfig
 		this.mapDriver( ITodoDriver, TodoDriver );
 		
 		var driver = this.get( ITodoDriver );
-		this.get( ITodoModel ).output.connect( driver.view );
+		this.get( ITodoModel ).output.connect( driver );
 		this.get( IFilterModel ).output.connect( driver );
 	}
 }

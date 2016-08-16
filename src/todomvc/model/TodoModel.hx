@@ -25,19 +25,19 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		this._items = [];
 	}
 	
-	public function getAllTodos() : Array<TodoItem>
+	public function getAllItems() : Array<TodoItem>
 	{
 		#if debug
-		logger.debug( ['TodoModel.getAllTodos'] );
+		logger.debug( ['TodoModel.getAllItems'] );
 		#end
 		
 		return this._items.copy();
 	}
 	
-	public function getActiveTodos() : Array<TodoItem>
+	public function getActiveItems() : Array<TodoItem>
 	{
 		#if debug
-		logger.debug( ['TodoModel.getActiveTodos'] );
+		logger.debug( ['TodoModel.getActiveItems'] );
 		#end
 		
 		var items = [];
@@ -52,10 +52,10 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		return items;
 	}
 	
-	public function getCompletedTodos() : Array<TodoItem>
+	public function getCompletedItems() : Array<TodoItem>
 	{
 		#if debug
-		logger.debug( ['TodoModel.getCompletedTodos'] );
+		logger.debug( ['TodoModel.getCompletedItems'] );
 		#end
 		
 		var items = [];
@@ -70,22 +70,22 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		return items;
 	}
 	
-	public function addTodo( item : TodoItem ) : Void
+	public function addItem( item : TodoItem ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoModel.addTodo:', item] );
+		logger.debug( ['TodoModel.addItem:', item] );
 		#end
 		
-		this.output.clearNewTodo();
+		this.output.onClearNewTodo();
 		this._items.push( item );
-		this.output.showEntries( this._items );
+		this.output.onShowEntries( this._items );
 		this._updateCount();
 	}
 	
-	public function removeTodo( id : String ) : Void
+	public function removeItem( id : String ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoModel.removeTodo:', id] );
+		logger.debug( ['TodoModel.removeItem:', id] );
 		#end
 		
 		for ( index in 0...this._items.length )
@@ -93,23 +93,27 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 			if ( this._items[ index ].id == id )
 			{
 				this._items.splice( index, 1 );
-				this.output.removeItem( id );
+				this.output.onRemoveItem( id );
 				this._updateCount();
 				break;
 			}
 		}
 	}
 	
-	public function editTodo( id : String ) : Void
-	{
-		var todo = this._getTodo( id );
-		this.output.editItem( todo.id, todo.title );
-	}
-	
-	public function removeCompleted() : Void
+	public function startItemEdition( id : String ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoModel.removeCompleted'] );
+		logger.debug( ['TodoModel.startItemEdition:', id] );
+		#end
+		
+		var todo = this._getTodo( id );
+		this.output.onEditItem( todo.id, todo.title );
+	}
+	
+	public function removeCompletedItems() : Void
+	{
+		#if debug
+		logger.debug( ['TodoModel.removeCompletedItems'] );
 		#end
 		
 		var l = this._items.length;
@@ -121,7 +125,7 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 			if ( item.completed )
 			{
 				this._items.splice( l, 1 );
-				this.output.removeItem( item.id );
+				this.output.onRemoveItem( item.id );
 			}
 		}
 		
@@ -131,10 +135,10 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		}
 	}
 
-	public function updateTodo( id : String, isCompleted : Bool ) : Void
+	public function setItemCompleted( id : String, isCompleted : Bool ) : Void
 	{
 		#if debug
-		logger.debug( ['TodoModel.updateTodo:', id, isCompleted] );
+		logger.debug( ['TodoModel.setItemCompleted:', id, isCompleted] );
 		#end
 		
 		for ( item in this._items )
@@ -142,14 +146,14 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 			if ( item.id == id ) 
 			{
 				item.completed = isCompleted;
-				this.output.elementComplete( id, isCompleted );
+				this.output.onSetItemCompleted( id, isCompleted );
 				this._updateCount();
 				break;
 			}
 		}
 	}
 	
-	public function editTodoTitle( id : String, title : String ) : Void
+	public function renameItem( id : String, title : String ) : Void
 	{
 		#if debug
 		logger.debug( ['TodoModel.editTodoTitle:', id, title] );
@@ -158,10 +162,10 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		var todo = this._getTodo( id );
 		todo.title = title;
 		this._updateCount();
-		this.output.editItemDone( id, title );
+		this.output.onEditItemDone( id, title );
 	}
 	
-	public function cancelEdition( id : String ) : Void
+	public function cancelItemEdition ( id : String ) : Void
 	{
 		#if debug
 		logger.debug( ['TodoModel.cancelEdition:', id] );
@@ -169,7 +173,7 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		
 		var todo = this._getTodo( id );
 		this._updateCount();
-		this.output.editItemDone( id, todo.title );
+		this.output.onEditItemDone( id, todo.title );
 	}
 	
 	//private
@@ -208,11 +212,11 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		}
 		
 		var itemCount 	= completedItemCount + activeItemCount;
-		var todos 		= this.getAllTodos();
+		var todos 		= this.getAllItems();
 		
-		this.output.updateItemCount( activeItemCount );
-		this.output.clearCompletedButton( completedItemCount, completedItemCount > 0 );
-		this.output.toggleAll( completedItemCount == itemCount );
-		this.output.setFooterVisibility( itemCount > 0 );
+		this.output.onUpdateItemCount( activeItemCount );
+		this.output.onClearCompletedButton( completedItemCount, completedItemCount > 0 );
+		this.output.onToggleAll( completedItemCount == itemCount );
+		this.output.onChangeFooterVisibility( itemCount > 0 );
 	}
 }

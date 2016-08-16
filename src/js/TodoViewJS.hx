@@ -50,7 +50,7 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._toggleAll 		= cast toggleAll;
 		this._newTodo 			= cast newTodo;
 		
-		this.setFooterVisibility( false );
+		this.changeFooterVisibility( false );
 	}
 	
 	public function setController( controller : ITodoController ) : Void
@@ -202,9 +202,6 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._setFilter( 'completed' );
 	}
 	
-	/**
-	 * ITodoConnection implementation
-	 */
 	public function showEntries( entries : Array<TodoItem> ) : Void 
 	{
 		this._todoList.innerHTML = this._template.show( entries );
@@ -212,7 +209,12 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	public function removeItem(  id : String ) : Void 
 	{
-		this._removeItem( id );
+		var elem = this._qs( '[data-id="' + id + '"]' );
+
+		if ( elem != null ) 
+		{
+			this._todoList.removeChild( elem );
+		}
 	}
 	
 	public function updateItemCount( activeItems : Int ) : Void 
@@ -222,10 +224,11 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	
 	public function clearCompletedButton( completedCount : Int, visible : Bool ) : Void 
 	{
-		this._clearCompletedButton( completedCount, visible );
+		this._clearCompleted.innerHTML = this._template.getClearCompletedString( completedCount );
+		this._clearCompleted.style.display = visible ? 'block' : 'none';
 	}
 	
-	public function setFooterVisibility( isVisible : Bool ) : Void 
+	public function changeFooterVisibility( isVisible : Bool ) : Void 
 	{
 		this._main.style.display = this._footer.style.display = isVisible ? 'block' : 'none';
 	}
@@ -240,28 +243,48 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 		this._newTodo.value = '';
 	}
 	
-	public function elementComplete( id : String, isCompleted : Bool ) : Void 
+	public function setItemCompleted( id : String, isCompleted : Bool ) : Void 
 	{
-		this._elementComplete( id, isCompleted );
+		var item = this._qs( '[data-id="' + id + '"]' );
+
+		if ( item != null ) 
+		{
+			item.className = isCompleted ? 'completed' : '';
+			var input : InputElement = cast item.querySelector( 'input' );
+			input.checked = isCompleted;
+		}
 	}
 	
 	public function editItem( id : String, title : String ) : Void
 	{
-		this._editItem( id, title );
+		var item = this._qs('[data-id="' + id + '"]');
+
+		if ( item != null ) 
+		{
+			item.className = item.className + ' editing';
+			var input : InputElement = cast Browser.document.createElement( 'input' );
+			input.className = 'edit';
+			item.appendChild( input );
+			input.focus();
+			input.value = title;
+		}
 	}
 	
 	public function editItemDone( id : String, title : String ) : Void
 	{
-		this._editItemDone( id, title );
-	}
-	
-	function _removeItem( id : String ) : Void
-	{
-		var elem = this._qs( '[data-id="' + id + '"]' );
+		var item = this._qs( '[data-id="' + id + '"]' );
 
-		if ( elem != null ) 
+		if ( item != null ) 
 		{
-			this._todoList.removeChild( elem );
+			var input : InputElement = cast item.querySelector( 'input.edit' );
+			item.removeChild( input );
+			item.className = item.className.split( 'editing' ).join( '' );
+
+			var list = item.querySelectorAll( 'label' );
+			for ( label in list )
+			{
+				( cast label ).textContent = title;
+			}
 		}
 	}
 	
@@ -275,62 +298,5 @@ class TodoViewJS implements ITodoView implements IInjectorContainer
 	function _itemID( element ) : String
 	{
 		return new JQuery( element ).parent().parent().attr( 'data-id' );
-	}
-
-	function _clearCompletedButton( completedTodos : Int, visible : Bool ) : Void
-	{
-		this._clearCompleted.innerHTML = this._template.clearCompletedButton( completedTodos );
-		this._clearCompleted.style.display = visible ? 'block' : 'none';
-	}
-
-	function _elementComplete( id, completed ) : Void
-	{
-		var listItem = this._qs( '[data-id="' + id + '"]' );
-
-		if ( listItem != null ) 
-		{
-			listItem.className = completed ? 'completed' : '';
-
-			// In case it was toggled from an event and not by clicking the checkbox
-			//qs( 'input', listItem ).checked = completed;
-			var input : InputElement = cast listItem.querySelector( 'input' );
-			input.checked = completed;
-		}
-	}
-
-	function _editItem( id, title ) : Void
-	{
-		trace( '_editItem', id, title );
-		var listItem = this._qs('[data-id="' + id + '"]');
-
-		if ( listItem != null ) 
-		{
-			listItem.className = listItem.className + ' editing';
-
-			var input : InputElement = cast Browser.document.createElement( 'input' );
-			input.className = 'edit';
-
-			listItem.appendChild( input );
-			input.focus();
-			input.value = title;
-		}
-	}
-
-	function _editItemDone( id, title ) : Void
-	{
-		var listItem = this._qs( '[data-id="' + id + '"]' );
-
-		if ( listItem != null ) 
-		{
-			var input : InputElement = cast listItem.querySelector( 'input.edit' );
-			listItem.removeChild( input );
-			listItem.className = listItem.className.split( 'editing' ).join( '' );
-
-			var list = listItem.querySelectorAll( 'label' );
-			for ( label in list )
-			{
-				( cast label ).textContent = title;
-			}
-		}
 	}
 }

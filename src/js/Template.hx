@@ -87,7 +87,7 @@ class Template
 	 * @param  {[type]} completedTodos The number of completed todos.
 	 * @return {string} String containing the count
 	 */
-	public function clearCompletedButton( completedTodos : Int ) : String
+	public function getClearCompletedString( completedTodos : Int ) : String
 	{
 		return ( completedTodos > 0 ) ? 'Clear completed' : '';
 	}
