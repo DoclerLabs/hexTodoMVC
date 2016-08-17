@@ -1,12 +1,13 @@
 package todomvc.view;
 
 import common.TodoItem;
+import hex.mdvc.log.IsLoggable;
 import todomvc.control.ITodoController;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoView
+interface ITodoView extends IsLoggable
 {
 	function setController( controller : ITodoController ) : Void;
 	
@@ -15,8 +16,7 @@ interface ITodoView
 	function selectActiveFilterButton() : Void;
 	
 	function selectCompletedFilterButton() : Void;
-	
-	//
+
 	function showEntries( entries : Array<TodoItem> ) : Void;
 	
 	function removeItem( id : String ) : Void;

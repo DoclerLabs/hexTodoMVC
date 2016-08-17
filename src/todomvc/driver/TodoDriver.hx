@@ -4,6 +4,7 @@ import common.Filter;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
 import hex.error.IllegalStateException;
+import hex.log.ILogger;
 import todomvc.control.ITodoController;
 import todomvc.view.ITodoView;
 
@@ -19,13 +20,16 @@ class TodoDriver implements ITodoDriver implements IInjectorContainer
 	@Inject
 	var controller : ITodoController;
 	
+	@Inject
+	public var logger : ILogger;
+	
 	@PostConstruct
-	public function init() : Void
+	@Debug public function init() : Void
 	{
 		this.view.setController( this.controller );
 	}
 	
-	public function changeFilter( currentFilter : Filter ) : Void
+	@Debug public function changeFilter( currentFilter : Filter ) : Void
 	{
 		switch( currentFilter )
 		{
@@ -46,14 +50,14 @@ class TodoDriver implements ITodoDriver implements IInjectorContainer
 		}
 	}
 	
-	@Forward( view.showEntries ) 			public function onShowEntries( entries : Array<TodoItem> ) : Void {}
-	@Forward( view.removeItem ) 			public function onRemoveItem( id : String ) : Void {}
-	@Forward( view.updateItemCount ) 		public function onUpdateItemCount( activeItems : Int ) : Void {}
-	@Forward( view.clearCompletedButton ) 	public function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void {}
-	@Forward( view.changeFooterVisibility ) public function onChangeFooterVisibility( isVisible : Bool ) : Void {}
-	@Forward( view.toggleAll ) 				public function onToggleAll( isChecked : Bool ) : Void {}
-	@Forward( view.clearNewTodo ) 			public function onClearNewTodo() : Void {}
-	@Forward( view.setItemCompleted ) 		public function onSetItemCompleted( id : String, isCompleted : Bool ) : Void {}
-	@Forward( view.editItem ) 				public function onEditItem( id : String, title : String ) : Void {}
-	@Forward( view.editItemDone ) 			public function onEditItemDone( id : String, title : String ) : Void {}
+	@Debug @Forward( view.showEntries ) 			public function onShowEntries( entries : Array<TodoItem> ) : Void {}
+	@Debug @Forward( view.removeItem ) 				public function onRemoveItem( id : String ) : Void {}
+	@Debug @Forward( view.updateItemCount ) 		public function onUpdateItemCount( activeItems : Int ) : Void {}
+	@Debug @Forward( view.clearCompletedButton ) 	public function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void {}
+	@Debug @Forward( view.changeFooterVisibility ) 	public function onChangeFooterVisibility( isVisible : Bool ) : Void {}
+	@Debug @Forward( view.toggleAll ) 				public function onToggleAll( isChecked : Bool ) : Void {}
+	@Debug @Forward( view.clearNewTodo ) 			public function onClearNewTodo() : Void {}
+	@Debug @Forward( view.setItemCompleted ) 		public function onSetItemCompleted( id : String, isCompleted : Bool ) : Void {}
+	@Debug @Forward( view.editItem ) 				public function onEditItem( id : String, title : String ) : Void {}
+	@Debug @Forward( view.editItemDone ) 			public function onEditItemDone( id : String, title : String ) : Void {}
 }

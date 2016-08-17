@@ -1,9 +1,9 @@
 package todomvc.driver;
 
+import common.IFilterConnection;
 import common.ITodoConnection;
 import hex.mdvc.driver.IForwarder;
 import hex.mdvc.driver.IInputOwner;
-import common.IFilterConnection;
 import todomvc.view.ITodoView;
 
 /**

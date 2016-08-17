@@ -1,13 +1,15 @@
 package todomvc.control;
 
-import hex.control.ICompletable;
 import common.Filter;
 import common.TodoItem;
+import hex.control.ICompletable;
+import hex.mdvc.driver.IForwarder;
+import hex.mdvc.log.IsLoggable;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoController 
+interface ITodoController extends IForwarder extends IsLoggable
 {
 	function setFilter( filter : Filter ) : Void;
 	

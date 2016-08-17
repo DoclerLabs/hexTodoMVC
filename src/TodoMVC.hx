@@ -4,7 +4,7 @@ package;
  * ...
  * @author Francis Bourre
  */
-class Main
+class TodoMVC
 {
 	static public function main() : Void
 	{
@@ -19,6 +19,6 @@ class Main
 			#end
 		#end
 		
-		hex.compiler.parser.xml.XmlCompiler.readXmlFile( "configuration/context.xml", null, [ "browser" => true, "flashplayer" => false ] );
+		hex.compiler.parser.xml.XmlCompiler.readXmlFile( "configuration/context.xml", null/*, [ "browser" => true, "flashplayer" => false ]*/ );
 	}
 }

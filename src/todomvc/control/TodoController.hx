@@ -26,45 +26,32 @@ class TodoController implements ITodoController implements IInjectorContainer
 	@Inject
 	public var logger : ILogger;
 
-	public function setFilter( filter : Filter ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::setFilter:', filter] );
-		#end
-		
-		this.filterModel.setFilter( filter );
-	}
+	@Debug @Forward( filterModel.setFilter ) 		public function setFilter( filter : Filter ) : Void { }
 
-	public function showAll() : ICompletable<Array<TodoItem>>
+	@Debug @Forward( model.startItemEdition ) 		public function editItem( id : String ) : Void {}
+	@Debug @Forward( model.cancelItemEdition ) 		public function editItemCancel( id : String ) : Void {}
+	@Debug @Forward( model.removeItem ) 			public function removeItem( id : String ) : Void {}
+	@Debug @Forward( model.removeCompletedItems ) 	public function removeCompletedItems() : Void {}
+	@Debug @Forward( model.setItemCompleted ) 		public function toggleComplete( id : String, isCompleted : Bool ) : Void {}
+	@Debug @Forward( model.toggleAllItems ) 		public function toggleAll( isCompleted : Bool ) : Void {}
+
+	@Debug public function showAll() : ICompletable<Array<TodoItem>>
 	{
-		#if debug
-		logger.debug( ['TodoController::showAll'] );
-		#end
 		return new ResultResponder( this.model.getAllItems() );
 	}
 
-	public function showActive() : ICompletable<Array<TodoItem>>
+	@Debug public function showActive() : ICompletable<Array<TodoItem>>
 	{
-		#if debug
-		logger.debug( ['TodoController::showActive'] );
-		#end
 		return new ResultResponder( this.model.getActiveItems() );
 	}
 
-	public function showCompleted() : ICompletable<Array<TodoItem>>
+	@Debug public function showCompleted() : ICompletable<Array<TodoItem>>
 	{
-		#if debug
-		logger.debug( ['TodoController::showCompleted'] );
-		#end
 		return new ResultResponder( this.model.getCompletedItems() );
 	}
 
-	public function addItem( title : String ) : Void
+	@Debug public function addItem( title : String ) : Void
 	{
-		#if debug
-		logger.debug( ['TodoController::addItem:' + title] );
-		#end
-		
 		var newTodoTitle = title.trim();
 		if ( newTodoTitle.length > 0  ) 
 		{
@@ -72,20 +59,8 @@ class TodoController implements ITodoController implements IInjectorContainer
 		}
 	}
 
-	public function editItem( id : String ) : Void
+	@Debug public function editItemSave( id : String, title : String ) : Void
 	{
-		#if debug
-		logger.debug( ['TodoController::editItem:', id] );
-		#end
-		this.model.startItemEdition( id );
-	}
-
-	public function editItemSave( id : String, title : String ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::editItemSave:', id, title] );
-		#end
-		
 		var updatedTodoTitle = title.trim();
 		if ( updatedTodoTitle.length > 0 ) 
 		{
@@ -95,47 +70,6 @@ class TodoController implements ITodoController implements IInjectorContainer
 		{
 			this.removeItem( id );
 		}
-	}
-
-	public function editItemCancel( id : String ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::editItemCancel:', id] );
-		#end
-		
-		this.model.cancelItemEdition( id );
-	}
-
-	public function removeItem( id : String ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::removeItem:', id] );
-		#end
-		this.model.removeItem( id );
-	}
-	
-	public function removeCompletedItems() : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::removeCompletedItems'] );
-		#end
-		this.model.removeCompletedItems();
-	}
-
-	public function toggleComplete( id : String, isCompleted : Bool ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::toggleComplete:', id, isCompleted] );
-		#end
-		this.model.setItemCompleted( id, isCompleted );
-	}
-
-	public function toggleAll( isCompleted : Bool ) : Void
-	{
-		#if debug
-		logger.debug( ['TodoController::toggleAll:', isCompleted] );
-		#end
-		this.model.toggleAllItems( isCompleted );
 	}
 }
 
