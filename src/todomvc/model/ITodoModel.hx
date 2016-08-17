@@ -23,4 +23,5 @@ interface ITodoModel extends IOutputOwner
 	function setItemCompleted( id : String, isCompleted : Bool ) : Void;
 	function renameItem( id : String, title : String ) : Void;
 	function cancelItemEdition( id : String ) : Void;
+	function toggleAllItems( isCompleted : Bool ) : Void;
 }

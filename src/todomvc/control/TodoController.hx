@@ -135,6 +135,7 @@ class TodoController implements ITodoController implements IInjectorContainer
 		#if debug
 		logger.debug( ['TodoController::toggleAll:', isCompleted] );
 		#end
+		this.model.toggleAllItems( isCompleted );
 	}
 }
 

@@ -176,6 +176,17 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 		this.output.onEditItemDone( id, todo.title );
 	}
 	
+	public function toggleAllItems( isCompleted : Bool ) : Void
+	{
+		for ( index in 0...this._items.length )
+		{
+			var item = this._items[ index ];
+			item.completed = isCompleted;
+			this.output.onSetItemCompleted( item.id, item.completed );
+		}
+		this._updateCount();
+	}
+	
 	//private
 	function _getTodo( id : String ) : TodoItem
 	{
