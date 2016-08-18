@@ -3,8 +3,9 @@ package todomvc.model;
 import common.ITodoConnection;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
-import hex.log.ILogger;
 import hex.mdvc.model.IOutput;
+
+using hex.util.ArrayUtil;
 
 /**
  * ...
@@ -16,14 +17,9 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 	public var output( default, never ) : IOutput<ITodoConnection>;
 	
 	@Inject
-	public var logger : ILogger;
+	public var logger : hex.log.ILogger;
 	
-	var _items : Array<TodoItem>;
-	
-	public function new() 
-	{
-		this._items = [];
-	}
+	var _items : Array<TodoItem> = [];
 	
 	@Debug public function getAllItems() : Array<TodoItem>
 	{
@@ -32,12 +28,12 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 	
 	@Debug public function getActiveItems() : Array<TodoItem>
 	{
-		return [ for ( item in this._items ) if ( !item.completed ) item ];
+		return this._items.filter( function( e ) { return !e.completed; } );
 	}
 	
 	@Debug public function getCompletedItems() : Array<TodoItem>
 	{
-		return [ for ( item in this._items ) if ( item.completed ) item ];
+		return this._items.filter( function( e ) { return e.completed; } );
 	}
 	
 	@Debug public function addItem( item : TodoItem ) : Void
@@ -50,124 +46,53 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 	
 	@Debug public function removeItem( id : String ) : Void
 	{
-		for ( index in 0...this._items.length )
-		{
-			if ( this._items[ index ].id == id )
-			{
-				this._items.splice( index, 1 );
-				this.output.onRemoveItem( id );
-				this._updateCount();
-				break;
-			}
-		}
+		this._items.doWhen( function( e ) { return e.id == id; },
+			function( e, i ) { this._items.splice( i, 1 ); this.output.onRemoveItem( e.id ); this._updateCount(); });
 	}
 	
 	@Debug public function startItemEdition( id : String ) : Void
 	{
-		var todo = this._getTodo( id );
-		this.output.onEditItem( todo.id, todo.title );
+		var item = this._items.findElement( function( e ){ return e.id == id;  } );
+		this.output.onEditItem( item.id, item.title );
 	}
 	
 	@Debug public function removeCompletedItems() : Void
 	{
-		var l = this._items.length;
-		var item = null;
-		while ( l-- > 0 )
-		{
-			item = this._items[ l ];
-			
-			if ( item.completed )
-			{
-				this._items.splice( l, 1 );
-				this.output.onRemoveItem( item.id );
-			}
-		}
-		
-		if ( item != null )
-		{
-			this._updateCount();
-		}
+		this._items.doWhen( function( e ) { return e.completed == true; },
+			function( e, i ) { this.output.onRemoveItem( e.id ); this._items.splice( i, 1 ); this._updateCount(); });
 	}
 
 	@Debug public function setItemCompleted( id : String, isCompleted : Bool ) : Void
 	{
-		for ( item in this._items )
-		{
-			if ( item.id == id ) 
-			{
-				item.completed = isCompleted;
-				this.output.onSetItemCompleted( id, isCompleted );
-				this._updateCount();
-				break;
-			}
-		}
+		this._items.doOnFirstWhen( function( e ) { return e.id == id; },
+			function( e, i ) { e.completed = isCompleted; this.output.onSetItemCompleted( id, isCompleted ); this._updateCount(); });
 	}
 	
 	@Debug public function renameItem( id : String, title : String ) : Void
 	{
-		var todo = this._getTodo( id );
-		todo.title = title;
-		this._updateCount();
-		this.output.onEditItemDone( id, title );
+		this._items.doOnFirstWhen( function( e ) { return e.id == id; },
+			function( e, i ) { e.title = title; this.output.onEditItemDone( id, title ); this._updateCount(); });
 	}
 	
 	@Debug public function cancelItemEdition ( id : String ) : Void
 	{
-		var todo = this._getTodo( id );
-		this._updateCount();
-		this.output.onEditItemDone( id, todo.title );
+		this._items.doOnFirstWhen( function( e ) { return e.id == id; },
+			function( e, i ) { this.output.onEditItemDone( id, e.title ); this._updateCount(); });
 	}
 	
 	@Debug public function toggleAllItems( isCompleted : Bool ) : Void
 	{
-		for ( index in 0...this._items.length )
-		{
-			var item = this._items[ index ];
-			item.completed = isCompleted;
-			this.output.onSetItemCompleted( item.id, item.completed );
-		}
+		this._items.doOnAll( function( e, i ) { e.completed = isCompleted; this.output.onSetItemCompleted( e.id, e.completed ); });
 		this._updateCount();
 	}
 	
 	//private
-	function _getTodo( id : String ) : TodoItem
+	@Debug function _updateCount() : Void
 	{
-		for ( item in this._items )
-		{
-			if ( item.id == id ) 
-			{
-				return item;
-			}
-		}
-		
-		return null;
-	}
-	
-	function _updateCount() : Void
-	{
-		#if debug
-		logger.debug( ['TodoModel._updateCount'] );
-		#end
-		
-		var completedItemCount 	= 0;
-		var activeItemCount 	= 0;
-		
-		for ( item in this._items )
-		{
-			if ( item.completed ) 
-			{
-				completedItemCount++;
-			} 
-			else 
-			{
-				activeItemCount++;
-			}
-		}
-		
-		var itemCount 	= completedItemCount + activeItemCount;
-		var todos 		= this.getAllItems();
-		
-		this.output.onUpdateItemCount( activeItemCount );
+		var itemCount 			= this._items.length;
+		var completedItemCount 	= this._items.countWhen( function( e ) { return e.completed == true; } );
+
+		this.output.onUpdateItemCount( itemCount - completedItemCount );
 		this.output.onClearCompletedButton( completedItemCount, completedItemCount > 0 );
 		this.output.onToggleAll( completedItemCount == itemCount );
 		this.output.onChangeFooterVisibility( itemCount > 0 );
