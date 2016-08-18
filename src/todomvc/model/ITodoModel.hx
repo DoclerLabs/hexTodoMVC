@@ -1,6 +1,7 @@
 package todomvc.model;
 
 import common.TodoItem;
+import hex.mdvc.log.IsLoggable;
 import hex.mdvc.model.IOutput;
 import hex.mdvc.model.IOutputOwner;
 import common.ITodoConnection;
@@ -8,7 +9,7 @@ import common.ITodoConnection;
 /**
  * @author Francis Bourre
  */
-interface ITodoModel extends IOutputOwner
+interface ITodoModel extends IOutputOwner extends IsLoggable
 {
 	var output( default, never ) : IOutput<ITodoConnection>;
 	
