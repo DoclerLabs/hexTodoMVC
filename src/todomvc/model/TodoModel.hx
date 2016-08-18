@@ -4,6 +4,7 @@ import common.ITodoConnection;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
 import hex.mdvc.model.IOutput;
+import hex.util.LambdaMacro;
 
 using hex.util.ArrayUtil;
 
@@ -47,7 +48,9 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 	@Debug public function removeItem( id : String ) : Void
 	{
 		this._items.doWhen( function( e ) { return e.id == id; },
-			function( e, i ) { this._items.splice( i, 1 ); this.output.onRemoveItem( e.id ); this._updateCount(); });
+			function( e, i ) { this._items.splice( i, 1 ); this.output.onRemoveItem( e.id ); this._updateCount(); } );
+			
+		//this._items.doWhen( ( e => e.id == id ), function( e, i ) { this._items.splice( i, 1 ); this.output.onRemoveItem( e.id ); this._updateCount(); } );
 	}
 	
 	@Debug public function startItemEdition( id : String ) : Void
@@ -90,7 +93,7 @@ class TodoModel implements ITodoModel implements IInjectorContainer
 	@Debug function _updateCount() : Void
 	{
 		var itemCount 			= this._items.length;
-		var completedItemCount 	= this._items.countWhen( function( e ) { return e.completed == true; } );
+		var completedItemCount 	= this._items.count( e => e.completed == true );
 
 		this.output.onUpdateItemCount( itemCount - completedItemCount );
 		this.output.onClearCompletedButton( completedItemCount, completedItemCount > 0 );
