@@ -14,6 +14,4 @@ interface IFilterModel extends IOutputOwner
 	var output( default, never ) : IOutput<IFilterConnection>;
 	
 	function setFilter( filter : Filter ) : Void;
-	
-	function getFilter() : Filter;
 }

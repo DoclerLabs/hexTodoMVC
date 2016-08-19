@@ -18,29 +18,11 @@ class FilterModel implements IFilterModel implements IInjectorContainer
 	@Output
 	public var output( default, never ) : IOutput<IFilterConnection>;
 	
-	var _currentFilter : Filter;
+	var _currentFilter : Filter = Filter.ALL;
 	
-	public function new() 
+	@Debug public function setFilter( filter : Filter ) : Void
 	{
-		this._currentFilter = Filter.ALL;
-	}
-	
-	inline public function setFilter( filter : Filter ) : Void
-	{
-		#if debug
-		logger.debug( ['FilterModel.setFilter:', filter] );
-		#end
-		
 		this._currentFilter = filter;
 		this.output.changeFilter( this._currentFilter );
-	}
-	
-	inline public function getFilter() : Filter
-	{
-		#if debug
-		logger.debug( ['FilterModel.getFilter'] );
-		#end
-		
-		return this._currentFilter;
 	}
 }
