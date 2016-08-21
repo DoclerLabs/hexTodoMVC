@@ -27,18 +27,5 @@ class Template
 	public var completedCount( default, null ) : haxe.Template = new haxe.Template 
 		( '::if (completedCount>0)::Clear completed::end::' );
 
-	public function new() 
-	{
-		
-	}
-
-	/*inline public function itemCounter( activeTodos : Int ) : String
-	{
-		return this.counter.execute( {activeTodos:activeTodos} );
-	}*/
-
-	/*public function getClearCompletedString( completedTodos : Int ) : String
-	{
-		return ( completedTodos > 0 ) ? 'Clear completed' : '';
-	}*/
+	public function new() {}
 }
