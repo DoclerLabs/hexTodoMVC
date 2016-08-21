@@ -18,6 +18,7 @@ import todomvc.model.TodoModel;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoModule extends Module
 {
 	public function new( serviceConfig : hex.config.stateful.IStatefulConfig, viewConfig : hex.config.stateful.IStatefulConfig ) 

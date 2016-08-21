@@ -14,6 +14,7 @@ using StringTools;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoController implements ITodoController
 {
 	@Inject

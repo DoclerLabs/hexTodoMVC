@@ -7,6 +7,7 @@ import todomvc.service.ITodoService;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoLocalStorage implements ITodoService
 {
 

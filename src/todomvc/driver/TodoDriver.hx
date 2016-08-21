@@ -11,6 +11,7 @@ import todomvc.view.ITodoView;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoDriver implements ITodoDriver
 {
 	@Inject

@@ -9,6 +9,7 @@ import hex.mdvc.model.IOutput;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class FilterModel implements IFilterModel
 {
 	@Inject

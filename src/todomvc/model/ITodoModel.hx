@@ -10,6 +10,7 @@ import common.ITodoConnection;
 /**
  * @author Francis Bourre
  */
+@:keepSub
 interface ITodoModel extends IOutputOwner extends IsLoggable extends IInjectorContainer
 {
 	var output( default, never ) : IOutput<ITodoConnection>;

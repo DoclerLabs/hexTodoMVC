@@ -10,6 +10,7 @@ using hex.util.ArrayUtil;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoModel implements ITodoModel
 {
 	@Output

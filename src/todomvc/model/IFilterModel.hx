@@ -11,6 +11,7 @@ import hex.mdvc.model.IOutputOwner;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 interface IFilterModel extends IOutputOwner extends IInjectorContainer extends IsLoggable
 {
 	var output( default, never ) : IOutput<IFilterConnection>;

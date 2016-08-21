@@ -10,6 +10,7 @@ import hex.mdvc.log.IsLoggable;
 /**
  * @author Francis Bourre
  */
+@:keepSub
 interface ITodoController extends IForwarder extends IsLoggable extends IInjectorContainer
 {
 	function setFilter( filter : Filter ) : Void;

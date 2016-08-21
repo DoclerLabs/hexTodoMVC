@@ -8,6 +8,7 @@ import todomvc.control.ITodoController;
 /**
  * @author Francis Bourre
  */
+@:keepSub
 interface ITodoView extends IsLoggable extends IInjectorContainer
 {
 	function setController( controller : ITodoController ) : Void;

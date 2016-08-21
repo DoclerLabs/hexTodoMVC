@@ -5,6 +5,7 @@ import common.TodoItem;
 /**
  * @author Francis Bourre
  */
+@:keepSub
 interface ITodoService 
 {
 	function load (): Array<TodoItem>;

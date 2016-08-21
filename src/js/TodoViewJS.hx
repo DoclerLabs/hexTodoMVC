@@ -15,6 +15,7 @@ import todomvc.view.ITodoView;
  * ...
  * @author Francis Bourre
  */
+@:keepSub
 class TodoViewJS implements ITodoView
 {
 	@Inject
