@@ -2,7 +2,6 @@ package todomvc.model;
 
 import common.Filter;
 import common.IFilterConnection;
-import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import hex.mdvc.model.IOutput;
 
@@ -10,7 +9,7 @@ import hex.mdvc.model.IOutput;
  * ...
  * @author Francis Bourre
  */
-class FilterModel implements IFilterModel implements IInjectorContainer
+class FilterModel implements IFilterModel
 {
 	@Inject
 	public var logger : ILogger;

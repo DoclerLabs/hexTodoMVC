@@ -2,7 +2,6 @@ package todomvc.driver;
 
 import common.Filter;
 import common.TodoItem;
-import hex.di.IInjectorContainer;
 import hex.error.IllegalStateException;
 import hex.log.ILogger;
 import todomvc.control.ITodoController;
@@ -12,7 +11,7 @@ import todomvc.view.ITodoView;
  * ...
  * @author Francis Bourre
  */
-class TodoDriver implements ITodoDriver implements IInjectorContainer
+class TodoDriver implements ITodoDriver
 {
 	@Inject
 	public var view : ITodoView;

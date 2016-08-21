@@ -4,7 +4,6 @@ import common.Filter;
 import common.TodoItem;
 import hex.control.ICompletable;
 import hex.control.ResultResponder;
-import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import todomvc.model.IFilterModel;
 import todomvc.model.ITodoModel;
@@ -15,7 +14,7 @@ using StringTools;
  * ...
  * @author Francis Bourre
  */
-class TodoController implements ITodoController implements IInjectorContainer
+class TodoController implements ITodoController
 {
 	@Inject
 	public var model : ITodoModel;

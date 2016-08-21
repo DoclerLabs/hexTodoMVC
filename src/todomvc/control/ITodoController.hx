@@ -3,13 +3,14 @@ package todomvc.control;
 import common.Filter;
 import common.TodoItem;
 import hex.control.ICompletable;
+import hex.di.IInjectorContainer;
 import hex.mdvc.driver.IForwarder;
 import hex.mdvc.log.IsLoggable;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoController extends IForwarder extends IsLoggable
+interface ITodoController extends IForwarder extends IsLoggable extends IInjectorContainer
 {
 	function setFilter( filter : Filter ) : Void;
 	

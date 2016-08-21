@@ -2,7 +2,6 @@ package js;
 
 import common.Filter;
 import common.TodoItem;
-import hex.di.IInjectorContainer;
 import hex.log.ILogger;
 import js.Browser;
 import js.html.Element;
@@ -16,7 +15,7 @@ import todomvc.view.ITodoView;
  * ...
  * @author Francis Bourre
  */
-class TodoViewJS implements ITodoView implements IInjectorContainer
+class TodoViewJS implements ITodoView
 {
 	@Inject
 	public var logger 		: ILogger;

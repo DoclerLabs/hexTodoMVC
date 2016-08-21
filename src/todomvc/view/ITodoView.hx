@@ -1,13 +1,14 @@
 package todomvc.view;
 
 import common.TodoItem;
+import hex.di.IInjectorContainer;
 import hex.mdvc.log.IsLoggable;
 import todomvc.control.ITodoController;
 
 /**
  * @author Francis Bourre
  */
-interface ITodoView extends IsLoggable
+interface ITodoView extends IsLoggable extends IInjectorContainer
 {
 	function setController( controller : ITodoController ) : Void;
 	

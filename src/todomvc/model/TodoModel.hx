@@ -2,7 +2,6 @@ package todomvc.model;
 
 import common.ITodoConnection;
 import common.TodoItem;
-import hex.di.IInjectorContainer;
 import hex.mdvc.model.IOutput;
 
 using hex.util.ArrayUtil;
@@ -11,7 +10,7 @@ using hex.util.ArrayUtil;
  * ...
  * @author Francis Bourre
  */
-class TodoModel implements ITodoModel implements IInjectorContainer
+class TodoModel implements ITodoModel
 {
 	@Output
 	public var output( default, never ) : IOutput<ITodoConnection>;
