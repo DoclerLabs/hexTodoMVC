@@ -159,7 +159,7 @@ class TodoViewJS implements ITodoView
 	
 	public function showEntries( entries : Array<TodoItem> ) : Void 
 	{
-		this._todoList.innerHTML = this._template.show( entries );
+		this._todoList.innerHTML = this._template.items.execute( { items: entries } );
 	}
 	
 	public function removeItem(  id : String ) : Void 
@@ -174,12 +174,12 @@ class TodoViewJS implements ITodoView
 	
 	public function updateItemCount( activeItems : Int ) : Void 
 	{
-		this._todoItemCounter.innerHTML = this._template.itemCounter( activeItems );
+		this._todoItemCounter.innerHTML = this._template.activeItems.execute( { activeItems: activeItems } );
 	}
 	
 	public function clearCompletedButton( completedCount : Int, visible : Bool ) : Void 
 	{
-		this._clearCompleted.innerHTML = this._template.getClearCompletedString( completedCount );
+		this._clearCompleted.innerHTML = this._template.completedCount.execute( { completedCount: completedCount } );
 		this._clearCompleted.style.display = visible ? 'block' : 'none';
 	}
 	

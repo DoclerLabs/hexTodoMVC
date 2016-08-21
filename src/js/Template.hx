@@ -10,93 +10,35 @@ using StringTools;
  */
 class Template
 {
-	public var defaultTemplate( default, null ) : String 
-	=	'<li data-id="{{id}}" class="{{completed}}">'
+	public var items( default, null ) : haxe.Template = new haxe.Template 
+		( '::foreach items::'
+		+ '<li data-id="::id::" class="::if completed::completed::end::">'
 		+		'<div class="view">'
-		+			'<input class="toggle" type="checkbox" {{checked}}>'
-		+			'<label>{{title}}</label>'
+		+			'<input class="toggle" type="checkbox" ::if completed::checked::end::>'
+		+			'<label>::title::</label>'
 		+			'<button class="destroy"></button>'
 		+		'</div>'
-		+	'</li>';
-	
+		+	'</li>'
+		+	'::end::' );
+		
+	public var activeItems( default, null ) : haxe.Template = new haxe.Template 
+		( '<strong>::activeItems::</strong> item::if (activeItems>1)::s::end:: left' );
+		
+	public var completedCount( default, null ) : haxe.Template = new haxe.Template 
+		( '::if (completedCount>0)::Clear completed::end::' );
+
 	public function new() 
 	{
 		
 	}
-	
-	/**
-	 * Creates an <li> HTML string and returns it for placement in your app.
-	 *
-	 * NOTE: In real life you should be using a templating engine such as Mustache
-	 * or Handlebars, however, this is a vanilla JS example.
-	 *
-	 * @param {object} data The object containing keys you want to find in the
-	 *                      template to replace.
-	 * @return {string} HTML String of an <li> element
-	 *
-	 * @example
-	 * view.show({
-	 *	id: 1,
-	 *	title: "Hello World",
-	 *	completed: 0,
-	 * });
-	 */
-	public function show( data : Array<TodoItem> ) : String
+
+	/*inline public function itemCounter( activeTodos : Int ) : String
 	{
-		var i, l;
-		var view = '';
+		return this.counter.execute( {activeTodos:activeTodos} );
+	}*/
 
-		for ( i in 0... data.length ) 
-		{
-			var template = this.defaultTemplate;
-			var completed = '';
-			var checked = '';
-
-			if ( data[ i ].completed ) 
-			{
-				completed = 'completed';
-				checked = 'checked';
-			}
-
-			template = template.replace( '{{id}}', data[ i ].id );
-			template = template.replace( '{{title}}', this._escape( data[ i ].title ) );
-			template = template.replace( '{{completed}}', completed );
-			template = template.replace( '{{checked}}', checked );
-
-			view = view + template;
-		}
-
-		return view;
-	}
-	
-	/**
-	 * Displays a counter of how many to dos are left to complete
-	 *
-	 * @param {number} activeTodos The number of active todos.
-	 * @return {string} String containing the count
-	 */
-	public function itemCounter( activeTodos : Int ) : String
-	{
-		var plural = activeTodos == 1 ? '' : 's';
-		return '<strong>' + activeTodos + '</strong> item' + plural + ' left';
-	}
-
-	/**
-	 * Updates the text within the "Clear completed" button
-	 *
-	 * @param  {[type]} completedTodos The number of completed todos.
-	 * @return {string} String containing the count
-	 */
-	public function getClearCompletedString( completedTodos : Int ) : String
+	/*public function getClearCompletedString( completedTodos : Int ) : String
 	{
 		return ( completedTodos > 0 ) ? 'Clear completed' : '';
-	}
-	
-	//
-	var reHasUnescapedHtml = ~/[&<>"'`]/g;
-
-	function _escape ( string : String ) : String
-	{
-		return string.htmlEscape( true );
-	}
+	}*/
 }
