@@ -47,7 +47,7 @@ class TodoModel implements ITodoModel
 	@Debug public function removeItem( id : String ) : Void
 	{
 		this._items.findAll( e => e.id == id )
-			.forEach( e => function( e ){ this._items.remove( e ); this.output.onRemoveItem( e.id ); this._updateCount(); } );
+			.forEachCall( e => function( e ){ this._items.remove( e ); this.output.onRemoveItem( e.id ); this._updateCount(); } );
 	}
 	
 	@Debug public function startItemEdition( id : String ) : Void
@@ -59,30 +59,30 @@ class TodoModel implements ITodoModel
 	@Debug public function removeCompletedItems() : Void
 	{
 		this._items.findAll( e => e.completed == true )
-			.forEach( e => function( e ){ this.output.onRemoveItem( e.id ); this._items.remove( e ); this._updateCount(); } );
+			.forEachCall( e => function( e ){ this.output.onRemoveItem( e.id ); this._items.remove( e ); this._updateCount(); } );
 	}
 
 	@Debug public function setItemCompleted( id : String, isCompleted : Bool ) : Void
 	{
 		this._items.findAll( e => e.id == id )
-			.forEach( e => function( e ){ e.completed = isCompleted; this.output.onSetItemCompleted( id, isCompleted ); this._updateCount(); } );
+			.forEachCall( e => function( e ){ e.completed = isCompleted; this.output.onSetItemCompleted( id, isCompleted ); this._updateCount(); } );
 	}
 	
 	@Debug public function renameItem( id : String, title : String ) : Void
 	{
 		this._items.findAll( e => e.id == id )
-			.forEach( e => function( e ){ e.title = title; this.output.onEditItemDone( id, title ); this._updateCount(); } );
+			.forEachCall( e => function( e ){ e.title = title; this.output.onEditItemDone( id, title ); this._updateCount(); } );
 	}
 	
 	@Debug public function cancelItemEdition ( id : String ) : Void
 	{
 		this._items.findAll( e => e.id == id )
-			.forEach( e => function( e ){ this.output.onEditItemDone( id, e.title ); this._updateCount(); } );
+			.forEachCall( e => function( e ){ this.output.onEditItemDone( id, e.title ); this._updateCount(); } );
 	}
 	
 	@Debug public function toggleAllItems( isCompleted : Bool ) : Void
 	{
-		this._items.forEach( e => function( e ){ e.completed = isCompleted; this.output.onSetItemCompleted( e.id, e.completed ); } );
+		this._items.forEachCall( e => function( e ){ e.completed = isCompleted; this.output.onSetItemCompleted( e.id, e.completed ); } );
 		this._updateCount();
 	}
 	
