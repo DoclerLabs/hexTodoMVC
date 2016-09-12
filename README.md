@@ -1,7 +1,8 @@
 # hexTodoMVC
 
-[![TravisCI Build Status](https://travis-ci.org/DoclerLabs/hexTodoMVC.svg?branch=master)](https://travis-ci.org/DoclerLabs/hexTodoMVC)
-TodoMVC applications built with hexMachina framework.
+TodoMVC applications built with hexMachina framework ( with ICompletable API and MDVC architecture ).
+
+:warning: **Warning**: This example and the API associated should not be used for now. It's experimental development.
 
 *Find more information about hexMachina on [hexmachina.org](http://hexmachina.org/)*
 
