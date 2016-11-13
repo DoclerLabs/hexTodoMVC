@@ -9,6 +9,7 @@ TodoMVC applications built with hexMachina framework ( with ICompletable API and
 ## Dependencies
 
 * [hexCore](https://github.com/DoclerLabs/hexCore)
+* [hexReflection](https://github.com/DoclerLabs/hexReflection)
 * [hexAnnotation](https://github.com/DoclerLabs/hexAnnotation)
 * [hexInject](https://github.com/DoclerLabs/hexInject)
 * [hexMVC](https://github.com/DoclerLabs/hexMVC)
