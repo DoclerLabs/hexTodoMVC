@@ -2,7 +2,7 @@ package todomvc.view;
 
 import common.TodoItem;
 import hex.di.IInjectorContainer;
-import hex.mdvc.log.IsLoggable;
+import hex.log.IsLoggable;
 import todomvc.control.ITodoController;
 
 /**

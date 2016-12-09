@@ -1,11 +1,11 @@
 package todomvc.model;
 
+import common.ITodoConnection;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
-import hex.mdvc.log.IsLoggable;
+import hex.log.IsLoggable;
 import hex.mdvc.model.IOutput;
 import hex.mdvc.model.IOutputOwner;
-import common.ITodoConnection;
 
 /**
  * @author Francis Bourre
