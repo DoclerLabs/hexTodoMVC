@@ -11,6 +11,30 @@ import js.jquery.JQuery;
 import todomvc.control.ITodoController;
 import todomvc.view.ITodoView;
 
+/*
+
+	
+	<div id="todoItemCounter" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".todo-count"/>
+	</div>
+	
+	<div id="main" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".main"/>
+	</div>
+	
+	<div id="footer" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".footer"/>
+	</div>
+	
+	<div id="toggleAll" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".toggle-all"/>
+	</div>
+	
+	<div id="newTodo" type="js.Browser" static-ref="document" factory="querySelector">
+		<argument value=".new-todo"/>
+	</div>
+*/
+
 /**
  * ...
  * @author Francis Bourre
@@ -18,8 +42,6 @@ import todomvc.view.ITodoView;
 @:keepSub
 class TodoViewJS implements ITodoView
 {
-
-	
 	var _controller 		: ITodoController;
 	var _qs 				: String -> Element = Browser.document.querySelector;
 	
@@ -40,6 +62,13 @@ class TodoViewJS implements ITodoView
 							toggleAll,
 							newTodo ) 
 	{
+		
+		/*this._todoList 			= js.Browser.document.querySelector( ".todo-list" );
+		this._clearCompleted 	= js.Browser.document.querySelector( ".clear-completed" );
+		this._clearCompleted 	= js.Browser.document.querySelector( ".clear-completed" );
+		this._clearCompleted 	= js.Browser.document.querySelector( ".clear-completed" );
+		this._clearCompleted 	= js.Browser.document.querySelector( ".clear-completed" );*/
+		
 		this._template 			= new Template();
 		this._todoList 			= cast todoList;
 		this._todoItemCounter 	= cast todoItemCounter;

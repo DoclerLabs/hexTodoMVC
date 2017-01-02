@@ -2,7 +2,7 @@ package todomvc.model;
 
 import common.ITodoConnection;
 import common.TodoItem;
-import hex.mdvc.model.IOutput;
+import hex.event.ITrigger;
 
 using hex.util.ArrayUtil;
 
@@ -14,7 +14,7 @@ using hex.util.ArrayUtil;
 class TodoModel implements ITodoModel
 {
 	@Output
-	public var output( default, never ) : IOutput<ITodoConnection>;
+	public var output( default, never ) : ITrigger<ITodoConnection>;
 	
 	var _items : Array<TodoItem> = [];
 	

@@ -4,17 +4,17 @@ import common.Filter;
 import common.IFilterConnection;
 import hex.di.IInjectorContainer;
 import hex.log.IsLoggable;
-import hex.mdvc.model.IOutput;
-import hex.mdvc.model.IOutputOwner;
+import hex.event.ITrigger;
+import hex.event.ITriggerOwner;
 
 /**
  * ...
  * @author Francis Bourre
  */
 @:keepSub
-interface IFilterModel extends IOutputOwner extends IInjectorContainer extends IsLoggable
+interface IFilterModel extends ITriggerOwner extends IInjectorContainer extends IsLoggable
 {
-	var output( default, never ) : IOutput<IFilterConnection>;
+	var output( default, never ) : ITrigger<IFilterConnection>;
 	
 	function setFilter( filter : Filter ) : Void;
 }
