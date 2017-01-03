@@ -11,7 +11,7 @@ import hex.event.ITrigger;
 @:keepSub
 class FilterModel implements IFilterModel
 {
-	@Output
+	@Trigger
 	public var output( default, never ) : ITrigger<IFilterConnection>;
 	
 	var _currentFilter : Filter = Filter.ALL;
