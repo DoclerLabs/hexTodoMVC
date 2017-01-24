@@ -18,9 +18,6 @@ import todomvc.view.ITodoView;
 @:keepSub
 class TodoViewJS implements ITodoView
 {
-	@Inject
-	public var logger 		: ILogger;
-	
 	var _controller 		: ITodoController;
 	var _qs 				: String -> Element = Browser.document.querySelector;
 	

@@ -2,8 +2,7 @@ package todomvc.model;
 
 import common.Filter;
 import common.IFilterConnection;
-import hex.log.ILogger;
-import hex.mdvc.model.IOutput;
+import hex.event.ITrigger;
 
 /**
  * ...
@@ -12,11 +11,8 @@ import hex.mdvc.model.IOutput;
 @:keepSub
 class FilterModel implements IFilterModel
 {
-	@Inject
-	public var logger : ILogger;
-	
-	@Output
-	public var output( default, never ) : IOutput<IFilterConnection>;
+	@Trigger
+	public var output( default, never ) : ITrigger<IFilterConnection>;
 	
 	var _currentFilter : Filter = Filter.ALL;
 	

@@ -1,19 +1,19 @@
 package todomvc.model;
 
+import common.ITodoConnection;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
-import hex.mdvc.log.IsLoggable;
-import hex.mdvc.model.IOutput;
-import hex.mdvc.model.IOutputOwner;
-import common.ITodoConnection;
+import hex.log.IsLoggable;
+import hex.event.ITrigger;
+import hex.event.ITriggerOwner;
 
 /**
  * @author Francis Bourre
  */
 @:keepSub
-interface ITodoModel extends IOutputOwner extends IsLoggable extends IInjectorContainer
+interface ITodoModel extends ITriggerOwner extends IsLoggable extends IInjectorContainer
 {
-	var output( default, never ) : IOutput<ITodoConnection>;
+	var output( default, never ) : ITrigger<ITodoConnection>;
 	
 	function getAllItems() : Array<TodoItem>;
 	function getActiveItems() : Array<TodoItem>;

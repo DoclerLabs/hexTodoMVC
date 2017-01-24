@@ -2,7 +2,7 @@ package todomvc.model;
 
 import common.ITodoConnection;
 import common.TodoItem;
-import hex.mdvc.model.IOutput;
+import hex.event.ITrigger;
 
 using hex.util.ArrayUtil;
 
@@ -13,11 +13,8 @@ using hex.util.ArrayUtil;
 @:keepSub
 class TodoModel implements ITodoModel
 {
-	@Output
-	public var output( default, never ) : IOutput<ITodoConnection>;
-	
-	@Inject
-	public var logger : hex.log.ILogger;
+	@Trigger
+	public var output( default, never ) : ITrigger<ITodoConnection>;
 	
 	var _items : Array<TodoItem> = [];
 	
@@ -28,12 +25,12 @@ class TodoModel implements ITodoModel
 	
 	@Debug public function getActiveItems() : Array<TodoItem>
 	{
-		return this._items.findAll( e => !e.completed );
+		return this._items.filters( e => !e.completed );
 	}
 	
 	@Debug public function getCompletedItems() : Array<TodoItem>
 	{
-		return this._items.findAll( e => e.completed );
+		return this._items.filters( e => e.completed );
 	}
 	
 	@Debug public function addItem( item : TodoItem ) : Void
@@ -46,7 +43,7 @@ class TodoModel implements ITodoModel
 	
 	@Debug public function removeItem( id : String ) : Void
 	{
-		this._items.findAll( e => e.id == id )
+		this._items.filters( e => e.id == id )
 			.forEachCall( e => function( e ){ this._items.remove( e ); this.output.onRemoveItem( e.id ); this._updateCount(); } );
 	}
 	
@@ -58,25 +55,25 @@ class TodoModel implements ITodoModel
 	
 	@Debug public function removeCompletedItems() : Void
 	{
-		this._items.findAll( e => e.completed == true )
+		this._items.filters( e => e.completed == true )
 			.forEachCall( e => function( e ){ this.output.onRemoveItem( e.id ); this._items.remove( e ); this._updateCount(); } );
 	}
 
 	@Debug public function setItemCompleted( id : String, isCompleted : Bool ) : Void
 	{
-		this._items.findAll( e => e.id == id )
+		this._items.filters( e => e.id == id )
 			.forEachCall( e => function( e ){ e.completed = isCompleted; this.output.onSetItemCompleted( id, isCompleted ); this._updateCount(); } );
 	}
 	
 	@Debug public function renameItem( id : String, title : String ) : Void
 	{
-		this._items.findAll( e => e.id == id )
+		this._items.filters( e => e.id == id )
 			.forEachCall( e => function( e ){ e.title = title; this.output.onEditItemDone( id, title ); this._updateCount(); } );
 	}
 	
 	@Debug public function cancelItemEdition ( id : String ) : Void
 	{
-		this._items.findAll( e => e.id == id )
+		this._items.filters( e => e.id == id )
 			.forEachCall( e => function( e ){ this.output.onEditItemDone( id, e.title ); this._updateCount(); } );
 	}
 	

@@ -4,7 +4,6 @@ import common.Filter;
 import common.TodoItem;
 import hex.control.ICompletable;
 import hex.control.ResultResponder;
-import hex.log.ILogger;
 import todomvc.model.IFilterModel;
 import todomvc.model.ITodoModel;
 
@@ -22,9 +21,6 @@ class TodoController implements ITodoController
 	
 	@Inject
 	public var filterModel : IFilterModel;
-	
-	@Inject
-	public var logger : ILogger;
 
 	@Debug @Forward( filterModel.setFilter ) 		public function setFilter( filter : Filter ) : Void { }
 

@@ -4,8 +4,8 @@ import common.Filter;
 import common.TodoItem;
 import hex.control.ICompletable;
 import hex.di.IInjectorContainer;
+import hex.log.IsLoggable;
 import hex.mdvc.driver.IForwarder;
-import hex.mdvc.log.IsLoggable;
 
 /**
  * @author Francis Bourre
