@@ -21,8 +21,6 @@ class TodoViewJS implements ITodoView
 {
 	@Inject
 	public var _controller 	: ITodoController;
-	
-	//var _controller 		: ITodoController;
 	var _qs 				: String -> Element = Browser.document.querySelector;
 	
 	var _template 			: Template;
@@ -34,31 +32,21 @@ class TodoViewJS implements ITodoView
 	var _toggleAll 			: InputElement;
 	var _newTodo 			: InputElement;
 	
-	public function new( 	todoList,
-							todoItemCounter,
-							clearCompleted,
-							main,
-							footer,
-							toggleAll,
-							newTodo ) 
+	public function new( main ) 
 	{
-		this._template 			= new Template();
-		this._todoList 			= cast todoList;
-		this._todoItemCounter 	= cast todoItemCounter;
-		this._clearCompleted 	= cast clearCompleted;
 		this._main 				= cast main;
-		this._footer 			= cast footer;
-		this._toggleAll 		= cast toggleAll;
-		this._newTodo 			= cast newTodo;
+		this._template 			= new Template();
+
+		var document 			= js.Browser.document;
+		this._todoList			= cast document.querySelector( '.todo-list' );
+		this._todoItemCounter 	= cast document.querySelector( '.todo-count' );
+		this._clearCompleted 	= cast document.querySelector( '.clear-completed' );
+		this._footer 			= cast document.querySelector( '.footer' );
+		this._toggleAll 		= cast document.querySelector( '.toggle-all' );
+		this._newTodo 			= cast document.querySelector( '.new-todo' );
 		
 		this.onChangeFooterVisibility( false );
 	}
-	
-	/*@Debug public function setController( controller : ITodoController ) : Void
-	{
-		//this._controller = controller;
-		
-	}*/
 	
 	@PostConstruct @Debug public function _do() : Void
 	{

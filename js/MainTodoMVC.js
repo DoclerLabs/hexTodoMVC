@@ -296,21 +296,9 @@ TodoMVC.main = function() {
 	var todoServiceLocator = new hex_ioc_di_MappingConfiguration();
 	todoServiceLocator.addMapping(todomvc_service_ITodoService,configuration_TodoLocalStorage,null,false,false);
 	coreFactory.register("todoServiceLocator",todoServiceLocator);
-	var footer = window.document.querySelector(".footer");
-	coreFactory.register("footer",footer);
 	var main = window.document.querySelector(".main");
 	coreFactory.register("main",main);
-	var todoItemCounter = window.document.querySelector(".todo-count");
-	coreFactory.register("todoItemCounter",todoItemCounter);
-	var newTodo = window.document.querySelector(".new-todo");
-	coreFactory.register("newTodo",newTodo);
-	var todoList = window.document.querySelector(".todo-list");
-	coreFactory.register("todoList",todoList);
-	var clearCompleted = window.document.querySelector(".clear-completed");
-	coreFactory.register("clearCompleted",clearCompleted);
-	var toggleAll = window.document.querySelector(".toggle-all");
-	coreFactory.register("toggleAll",toggleAll);
-	var view = new js_TodoViewJS(todoList,todoItemCounter,clearCompleted,main,footer,toggleAll,newTodo);
+	var view = new js_TodoViewJS(main);
 	coreFactory.register("view",view);
 	var viewConfig = new hex_ioc_di_MappingConfiguration();
 	viewConfig.addMapping(todomvc_view_ITodoView,view,null,false,true);
@@ -1669,65 +1657,6 @@ hex_config_stateless_IStatelessConfig.__name__ = ["hex","config","stateless","IS
 hex_config_stateless_IStatelessConfig.prototype = {
 	__class__: hex_config_stateless_IStatelessConfig
 };
-var hex_di_IInjectorContainer = function() { };
-$hxClasses["hex.di.IInjectorContainer"] = hex_di_IInjectorContainer;
-hex_di_IInjectorContainer.__name__ = ["hex","di","IInjectorContainer"];
-var hex_config_stateless_ModuleConfig = function() {
-};
-$hxClasses["hex.config.stateless.ModuleConfig"] = hex_config_stateless_ModuleConfig;
-hex_config_stateless_ModuleConfig.__name__ = ["hex","config","stateless","ModuleConfig"];
-hex_config_stateless_ModuleConfig.__interfaces__ = [hex_config_stateless_IStatelessConfig];
-hex_config_stateless_ModuleConfig.prototype = {
-	configure: function() {
-		throw new js__$Boot_HaxeError(new hex_error_VirtualMethodException(Std.string(this) + ".configure must be overridden",{ fileName : "ModuleConfig.hx", lineNumber : 24, className : "hex.config.stateless.ModuleConfig", methodName : "configure"}));
-	}
-	,get: function(type,name) {
-		if(name == null) {
-			name = "";
-		}
-		return this.injector.getInstance(type);
-	}
-	,mapController: function(controllerInterface,controllerClass,name,asSingleton) {
-		if(asSingleton == null) {
-			asSingleton = false;
-		}
-		if(name == null) {
-			name = "";
-		}
-		if(asSingleton) {
-			this.injector.mapToSingleton(controllerInterface,controllerClass,name);
-		} else {
-			this.injector.mapToType(controllerInterface,controllerClass,name);
-		}
-	}
-	,mapModel: function(modelInterface,modelClass,name,asSingleton) {
-		if(asSingleton == null) {
-			asSingleton = false;
-		}
-		if(name == null) {
-			name = "";
-		}
-		if(asSingleton) {
-			this.injector.mapToSingleton(modelInterface,modelClass,name);
-		} else {
-			this.injector.mapToType(modelInterface,modelClass,name);
-		}
-	}
-	,mapMediator: function(mediatorInterface,mediatorClass,name,asSingleton) {
-		if(asSingleton == null) {
-			asSingleton = false;
-		}
-		if(name == null) {
-			name = "";
-		}
-		if(asSingleton) {
-			this.injector.mapToSingleton(mediatorInterface,mediatorClass,name);
-		} else {
-			this.injector.mapToType(mediatorInterface,mediatorClass,name);
-		}
-	}
-	,__class__: hex_config_stateless_ModuleConfig
-};
 var hex_control_IFrontController = function() { };
 $hxClasses["hex.control.IFrontController"] = hex_control_IFrontController;
 hex_control_IFrontController.__name__ = ["hex","control","IFrontController"];
@@ -1826,6 +1755,9 @@ hex_control_ResultResponder.prototype = {
 	}
 	,__class__: hex_control_ResultResponder
 };
+var hex_di_IInjectorContainer = function() { };
+$hxClasses["hex.di.IInjectorContainer"] = hex_di_IInjectorContainer;
+hex_di_IInjectorContainer.__name__ = ["hex","di","IInjectorContainer"];
 var hex_control_command_ICommand = function() { };
 $hxClasses["hex.control.command.ICommand"] = hex_control_command_ICommand;
 hex_control_command_ICommand.__name__ = ["hex","control","command","ICommand"];
@@ -6125,8 +6057,24 @@ hex_module_Module.prototype = {
 			configuration.configure(this._injector,this._internalDispatcher,this);
 		}
 	}
-	,_get: function(type) {
-		return this._injector.getInstance(type);
+	,_get: function(type,name) {
+		if(name == null) {
+			name = "";
+		}
+		return this._injector.getInstance(type,name);
+	}
+	,_map: function(tInterface,tClass,name,asSingleton) {
+		if(asSingleton == null) {
+			asSingleton = false;
+		}
+		if(name == null) {
+			name = "";
+		}
+		if(asSingleton) {
+			this._injector.mapToSingleton(tInterface,tClass,name);
+		} else {
+			this._injector.mapToType(tInterface,tClass,name);
+		}
 	}
 	,__class__: hex_module_Module
 	,__properties__: {get_isReleased:"get_isReleased",get_isInitialized:"get_isInitialized"}
@@ -7062,16 +7010,17 @@ var todomvc_view_ITodoView = function() { };
 $hxClasses["todomvc.view.ITodoView"] = todomvc_view_ITodoView;
 todomvc_view_ITodoView.__name__ = ["todomvc","view","ITodoView"];
 todomvc_view_ITodoView.__interfaces__ = [common_ITodoConnection,common_IFilterConnection];
-var js_TodoViewJS = function(todoList,todoItemCounter,clearCompleted,main,footer,toggleAll,newTodo) {
+var js_TodoViewJS = function(main) {
 	this._qs = ($_=window.document,$bind($_,$_.querySelector));
-	this._template = new js_Template();
-	this._todoList = todoList;
-	this._todoItemCounter = todoItemCounter;
-	this._clearCompleted = clearCompleted;
 	this._main = main;
-	this._footer = footer;
-	this._toggleAll = toggleAll;
-	this._newTodo = newTodo;
+	this._template = new js_Template();
+	var document = window.document;
+	this._todoList = document.querySelector(".todo-list");
+	this._todoItemCounter = document.querySelector(".todo-count");
+	this._clearCompleted = document.querySelector(".clear-completed");
+	this._footer = document.querySelector(".footer");
+	this._toggleAll = document.querySelector(".toggle-all");
+	this._newTodo = document.querySelector(".new-todo");
 	this.onChangeFooterVisibility(false);
 };
 $hxClasses["js.TodoViewJS"] = js_TodoViewJS;
@@ -7080,13 +7029,13 @@ js_TodoViewJS.__interfaces__ = [todomvc_view_ITodoView];
 js_TodoViewJS.prototype = {
 	_do: function() {
 		var _gthis = this;
-		this.logger.debug(["js.TodoViewJS::_do"],{ fileName : "TodoViewJS.hx", lineNumber : 63, className : "js.TodoViewJS", methodName : "_do"});
+		this.logger.debug(["js.TodoViewJS::_do"],{ fileName : "TodoViewJS.hx", lineNumber : 51, className : "js.TodoViewJS", methodName : "_do"});
 		$(function() {
 			_gthis._initJQuery();
 		});
 	}
 	,_initJQuery: function() {
-		this.logger.debug(["js.TodoViewJS::_initJQuery"],{ fileName : "TodoViewJS.hx", lineNumber : 68, className : "js.TodoViewJS", methodName : "_initJQuery"});
+		this.logger.debug(["js.TodoViewJS::_initJQuery"],{ fileName : "TodoViewJS.hx", lineNumber : 56, className : "js.TodoViewJS", methodName : "_initJQuery"});
 		$(window).on("hashchange",null,$bind(this,this._onHashChange));
 		$(this._newTodo).on("change",null,$bind(this,this._onNewTodo));
 		$(this._clearCompleted).on("click",null,$bind(this,this._onClearCompleted));
@@ -7099,7 +7048,7 @@ js_TodoViewJS.prototype = {
 		$(window).on("hashchange",null,$bind(this,this._onHashChange));
 	}
 	,_onHashChange: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onHashChange",e],{ fileName : "TodoViewJS.hx", lineNumber : 85, className : "js.TodoViewJS", methodName : "_onHashChange"});
+		this.logger.debug(["js.TodoViewJS::_onHashChange",e],{ fileName : "TodoViewJS.hx", lineNumber : 73, className : "js.TodoViewJS", methodName : "_onHashChange"});
 		var location = e.target.location.hash;
 		var route = location.split("/")[1];
 		var filter;
@@ -7116,31 +7065,31 @@ js_TodoViewJS.prototype = {
 		this._controller.setFilter(filter);
 	}
 	,_onNewTodo: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onNewTodo",e],{ fileName : "TodoViewJS.hx", lineNumber : 99, className : "js.TodoViewJS", methodName : "_onNewTodo"});
+		this.logger.debug(["js.TodoViewJS::_onNewTodo",e],{ fileName : "TodoViewJS.hx", lineNumber : 87, className : "js.TodoViewJS", methodName : "_onNewTodo"});
 		this._controller.addItem(e.target.value);
 	}
 	,_onClearCompleted: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onClearCompleted",e],{ fileName : "TodoViewJS.hx", lineNumber : 104, className : "js.TodoViewJS", methodName : "_onClearCompleted"});
+		this.logger.debug(["js.TodoViewJS::_onClearCompleted",e],{ fileName : "TodoViewJS.hx", lineNumber : 92, className : "js.TodoViewJS", methodName : "_onClearCompleted"});
 		this._controller.removeCompletedItems();
 	}
 	,_onToggleAll: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onToggleAll",e],{ fileName : "TodoViewJS.hx", lineNumber : 109, className : "js.TodoViewJS", methodName : "_onToggleAll"});
+		this.logger.debug(["js.TodoViewJS::_onToggleAll",e],{ fileName : "TodoViewJS.hx", lineNumber : 97, className : "js.TodoViewJS", methodName : "_onToggleAll"});
 		this._controller.toggleAll(e.target.checked);
 	}
 	,_onEditItem: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onEditItem",e],{ fileName : "TodoViewJS.hx", lineNumber : 114, className : "js.TodoViewJS", methodName : "_onEditItem"});
+		this.logger.debug(["js.TodoViewJS::_onEditItem",e],{ fileName : "TodoViewJS.hx", lineNumber : 102, className : "js.TodoViewJS", methodName : "_onEditItem"});
 		this._controller.editItem(this._itemID(e.target));
 	}
 	,_onRemoveItem: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onRemoveItem",e],{ fileName : "TodoViewJS.hx", lineNumber : 119, className : "js.TodoViewJS", methodName : "_onRemoveItem"});
+		this.logger.debug(["js.TodoViewJS::_onRemoveItem",e],{ fileName : "TodoViewJS.hx", lineNumber : 107, className : "js.TodoViewJS", methodName : "_onRemoveItem"});
 		this._controller.removeItem(this._itemID(e.target));
 	}
 	,_onToggleComplete: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onToggleComplete",e],{ fileName : "TodoViewJS.hx", lineNumber : 124, className : "js.TodoViewJS", methodName : "_onToggleComplete"});
+		this.logger.debug(["js.TodoViewJS::_onToggleComplete",e],{ fileName : "TodoViewJS.hx", lineNumber : 112, className : "js.TodoViewJS", methodName : "_onToggleComplete"});
 		this._controller.toggleComplete(this._itemID(e.target),e.target.checked);
 	}
 	,_onItemKeyPress: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onItemKeyPress",e],{ fileName : "TodoViewJS.hx", lineNumber : 129, className : "js.TodoViewJS", methodName : "_onItemKeyPress"});
+		this.logger.debug(["js.TodoViewJS::_onItemKeyPress",e],{ fileName : "TodoViewJS.hx", lineNumber : 117, className : "js.TodoViewJS", methodName : "_onItemKeyPress"});
 		if(e.keyCode == 13) {
 			var li = e.target;
 			li.blur();
@@ -7148,7 +7097,7 @@ js_TodoViewJS.prototype = {
 		}
 	}
 	,_onCancelItemEdition: function(e) {
-		this.logger.debug(["js.TodoViewJS::_onCancelItemEdition",e],{ fileName : "TodoViewJS.hx", lineNumber : 139, className : "js.TodoViewJS", methodName : "_onCancelItemEdition"});
+		this.logger.debug(["js.TodoViewJS::_onCancelItemEdition",e],{ fileName : "TodoViewJS.hx", lineNumber : 127, className : "js.TodoViewJS", methodName : "_onCancelItemEdition"});
 		if(e.keyCode == 27) {
 			var li = e.target;
 			li.blur();
@@ -7156,34 +7105,34 @@ js_TodoViewJS.prototype = {
 		}
 	}
 	,selectAllFilterButton: function() {
-		this.logger.debug(["js.TodoViewJS::selectAllFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 152, className : "js.TodoViewJS", methodName : "selectAllFilterButton"});
+		this.logger.debug(["js.TodoViewJS::selectAllFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 140, className : "js.TodoViewJS", methodName : "selectAllFilterButton"});
 		this._setFilter("");
 	}
 	,selectActiveFilterButton: function() {
-		this.logger.debug(["js.TodoViewJS::selectActiveFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 157, className : "js.TodoViewJS", methodName : "selectActiveFilterButton"});
+		this.logger.debug(["js.TodoViewJS::selectActiveFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 145, className : "js.TodoViewJS", methodName : "selectActiveFilterButton"});
 		this._setFilter("active");
 	}
 	,selectCompletedFilterButton: function() {
-		this.logger.debug(["js.TodoViewJS::selectCompletedFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 162, className : "js.TodoViewJS", methodName : "selectCompletedFilterButton"});
+		this.logger.debug(["js.TodoViewJS::selectCompletedFilterButton"],{ fileName : "TodoViewJS.hx", lineNumber : 150, className : "js.TodoViewJS", methodName : "selectCompletedFilterButton"});
 		this._setFilter("completed");
 	}
 	,onShowEntries: function(entries) {
-		this.logger.debug(["js.TodoViewJS::onShowEntries",entries],{ fileName : "TodoViewJS.hx", lineNumber : 167, className : "js.TodoViewJS", methodName : "onShowEntries"});
+		this.logger.debug(["js.TodoViewJS::onShowEntries",entries],{ fileName : "TodoViewJS.hx", lineNumber : 155, className : "js.TodoViewJS", methodName : "onShowEntries"});
 		this._todoList.innerHTML = this._template.items.execute({ items : entries});
 	}
 	,onRemoveItem: function(id) {
-		this.logger.debug(["js.TodoViewJS::onRemoveItem",id],{ fileName : "TodoViewJS.hx", lineNumber : 172, className : "js.TodoViewJS", methodName : "onRemoveItem"});
+		this.logger.debug(["js.TodoViewJS::onRemoveItem",id],{ fileName : "TodoViewJS.hx", lineNumber : 160, className : "js.TodoViewJS", methodName : "onRemoveItem"});
 		var elem = this._qs("[data-id=\"" + id + "\"]");
 		if(elem != null) {
 			this._todoList.removeChild(elem);
 		}
 	}
 	,onUpdateItemCount: function(activeItems) {
-		this.logger.debug(["js.TodoViewJS::onUpdateItemCount",activeItems],{ fileName : "TodoViewJS.hx", lineNumber : 182, className : "js.TodoViewJS", methodName : "onUpdateItemCount"});
+		this.logger.debug(["js.TodoViewJS::onUpdateItemCount",activeItems],{ fileName : "TodoViewJS.hx", lineNumber : 170, className : "js.TodoViewJS", methodName : "onUpdateItemCount"});
 		this._todoItemCounter.innerHTML = this._template.activeItems.execute({ activeItems : activeItems});
 	}
 	,onClearCompletedButton: function(completedCount,visible) {
-		this.logger.debug(["js.TodoViewJS::onClearCompletedButton",completedCount,visible],{ fileName : "TodoViewJS.hx", lineNumber : 187, className : "js.TodoViewJS", methodName : "onClearCompletedButton"});
+		this.logger.debug(["js.TodoViewJS::onClearCompletedButton",completedCount,visible],{ fileName : "TodoViewJS.hx", lineNumber : 175, className : "js.TodoViewJS", methodName : "onClearCompletedButton"});
 		this._clearCompleted.innerHTML = this._template.completedCount.execute({ completedCount : completedCount});
 		this._clearCompleted.style.display = visible?"block":"none";
 	}
@@ -7191,15 +7140,15 @@ js_TodoViewJS.prototype = {
 		this._main.style.display = this._footer.style.display = isVisible?"block":"none";
 	}
 	,onToggleAll: function(isChecked) {
-		this.logger.debug(["js.TodoViewJS::onToggleAll",isChecked],{ fileName : "TodoViewJS.hx", lineNumber : 198, className : "js.TodoViewJS", methodName : "onToggleAll"});
+		this.logger.debug(["js.TodoViewJS::onToggleAll",isChecked],{ fileName : "TodoViewJS.hx", lineNumber : 186, className : "js.TodoViewJS", methodName : "onToggleAll"});
 		this._toggleAll.checked = isChecked;
 	}
 	,onClearNewTodo: function() {
-		this.logger.debug(["js.TodoViewJS::onClearNewTodo"],{ fileName : "TodoViewJS.hx", lineNumber : 203, className : "js.TodoViewJS", methodName : "onClearNewTodo"});
+		this.logger.debug(["js.TodoViewJS::onClearNewTodo"],{ fileName : "TodoViewJS.hx", lineNumber : 191, className : "js.TodoViewJS", methodName : "onClearNewTodo"});
 		this._newTodo.value = "";
 	}
 	,onSetItemCompleted: function(id,isCompleted) {
-		this.logger.debug(["js.TodoViewJS::onSetItemCompleted",id,isCompleted],{ fileName : "TodoViewJS.hx", lineNumber : 208, className : "js.TodoViewJS", methodName : "onSetItemCompleted"});
+		this.logger.debug(["js.TodoViewJS::onSetItemCompleted",id,isCompleted],{ fileName : "TodoViewJS.hx", lineNumber : 196, className : "js.TodoViewJS", methodName : "onSetItemCompleted"});
 		var item = this._qs("[data-id=\"" + id + "\"]");
 		if(item != null) {
 			item.className = isCompleted?"completed":"";
@@ -7208,7 +7157,7 @@ js_TodoViewJS.prototype = {
 		}
 	}
 	,onEditItem: function(id,title) {
-		this.logger.debug(["js.TodoViewJS::onEditItem",id,title],{ fileName : "TodoViewJS.hx", lineNumber : 220, className : "js.TodoViewJS", methodName : "onEditItem"});
+		this.logger.debug(["js.TodoViewJS::onEditItem",id,title],{ fileName : "TodoViewJS.hx", lineNumber : 208, className : "js.TodoViewJS", methodName : "onEditItem"});
 		var item = this._qs("[data-id=\"" + id + "\"]");
 		if(item != null) {
 			item.className += " editing";
@@ -7220,7 +7169,7 @@ js_TodoViewJS.prototype = {
 		}
 	}
 	,onEditItemDone: function(id,title) {
-		this.logger.debug(["js.TodoViewJS::onEditItemDone",id,title],{ fileName : "TodoViewJS.hx", lineNumber : 235, className : "js.TodoViewJS", methodName : "onEditItemDone"});
+		this.logger.debug(["js.TodoViewJS::onEditItemDone",id,title],{ fileName : "TodoViewJS.hx", lineNumber : 223, className : "js.TodoViewJS", methodName : "onEditItemDone"});
 		var item = this._qs("[data-id=\"" + id + "\"]");
 		if(item != null) {
 			var input = item.querySelector("input.edit");
@@ -7236,7 +7185,7 @@ js_TodoViewJS.prototype = {
 		}
 	}
 	,changeFilter: function(currentFilter) {
-		this.logger.debug(["js.TodoViewJS::changeFilter",currentFilter],{ fileName : "TodoViewJS.hx", lineNumber : 253, className : "js.TodoViewJS", methodName : "changeFilter"});
+		this.logger.debug(["js.TodoViewJS::changeFilter",currentFilter],{ fileName : "TodoViewJS.hx", lineNumber : 241, className : "js.TodoViewJS", methodName : "changeFilter"});
 		switch(currentFilter[1]) {
 		case 0:
 			this.selectAllFilterButton();
@@ -7389,31 +7338,31 @@ todomvc_model_TodoModel.prototype = {
 	}
 	,getActiveItems: function() {
 		this.logger.debug(["todomvc.model.TodoModel::getActiveItems"],{ fileName : "TodoModel.hx", lineNumber : 26, className : "todomvc.model.TodoModel", methodName : "getActiveItems"});
-		var __tmp_4956644 = [];
+		var __tmp_10229205 = [];
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(!e.completed) {
-				__tmp_4956644.push(e);
+				__tmp_10229205.push(e);
 			}
 		}
-		return __tmp_4956644;
+		return __tmp_10229205;
 	}
 	,getCompletedItems: function() {
 		this.logger.debug(["todomvc.model.TodoModel::getCompletedItems"],{ fileName : "TodoModel.hx", lineNumber : 31, className : "todomvc.model.TodoModel", methodName : "getCompletedItems"});
-		var __tmp_5992132 = [];
+		var __tmp_1242400 = [];
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.completed) {
-				__tmp_5992132.push(e);
+				__tmp_1242400.push(e);
 			}
 		}
-		return __tmp_5992132;
+		return __tmp_1242400;
 	}
 	,addItem: function(item) {
 		this.logger.debug(["todomvc.model.TodoModel::addItem",item],{ fileName : "TodoModel.hx", lineNumber : 36, className : "todomvc.model.TodoModel", methodName : "addItem"});
@@ -7426,18 +7375,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::removeItem",id],{ fileName : "TodoModel.hx", lineNumber : 44, className : "todomvc.model.TodoModel", methodName : "removeItem"});
 		var _g = 0;
-		var __tmp_2913570 = [];
+		var __tmp_4532528 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_2913570.push(e);
+				__tmp_4532528.push(e);
 			}
 		}
-		while(_g < __tmp_2913570.length) {
-			var e1 = __tmp_2913570[_g];
+		while(_g < __tmp_4532528.length) {
+			var e1 = __tmp_4532528[_g];
 			++_g;
 			HxOverrides.remove(_gthis._items,e1);
 			_gthis.output.onRemoveItem(e1.id);
@@ -7446,36 +7395,36 @@ todomvc_model_TodoModel.prototype = {
 	}
 	,startItemEdition: function(id) {
 		this.logger.debug(["todomvc.model.TodoModel::startItemEdition",id],{ fileName : "TodoModel.hx", lineNumber : 50, className : "todomvc.model.TodoModel", methodName : "startItemEdition"});
-		var __tmp_10824414 = null;
+		var __tmp_7381527 = null;
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.id == id) {
-				__tmp_10824414 = e;
+				__tmp_7381527 = e;
 				break;
 			}
 		}
-		var item = __tmp_10824414;
+		var item = __tmp_7381527;
 		this.output.onEditItem(item.id,item.title);
 	}
 	,removeCompletedItems: function() {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::removeCompletedItems"],{ fileName : "TodoModel.hx", lineNumber : 56, className : "todomvc.model.TodoModel", methodName : "removeCompletedItems"});
 		var _g = 0;
-		var __tmp_3079351 = [];
+		var __tmp_945929 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.completed == true) {
-				__tmp_3079351.push(e);
+				__tmp_945929.push(e);
 			}
 		}
-		while(_g < __tmp_3079351.length) {
-			var e1 = __tmp_3079351[_g];
+		while(_g < __tmp_945929.length) {
+			var e1 = __tmp_945929[_g];
 			++_g;
 			_gthis.output.onRemoveItem(e1.id);
 			HxOverrides.remove(_gthis._items,e1);
@@ -7486,18 +7435,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::setItemCompleted",id,isCompleted],{ fileName : "TodoModel.hx", lineNumber : 62, className : "todomvc.model.TodoModel", methodName : "setItemCompleted"});
 		var _g = 0;
-		var __tmp_6086519 = [];
+		var __tmp_12292677 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_6086519.push(e);
+				__tmp_12292677.push(e);
 			}
 		}
-		while(_g < __tmp_6086519.length) {
-			var e1 = __tmp_6086519[_g];
+		while(_g < __tmp_12292677.length) {
+			var e1 = __tmp_12292677[_g];
 			++_g;
 			e1.completed = isCompleted;
 			_gthis.output.onSetItemCompleted(id,isCompleted);
@@ -7508,18 +7457,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::renameItem",id,title],{ fileName : "TodoModel.hx", lineNumber : 68, className : "todomvc.model.TodoModel", methodName : "renameItem"});
 		var _g = 0;
-		var __tmp_12506786 = [];
+		var __tmp_6926435 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_12506786.push(e);
+				__tmp_6926435.push(e);
 			}
 		}
-		while(_g < __tmp_12506786.length) {
-			var e1 = __tmp_12506786[_g];
+		while(_g < __tmp_6926435.length) {
+			var e1 = __tmp_6926435[_g];
 			++_g;
 			e1.title = title;
 			_gthis.output.onEditItemDone(id,title);
@@ -7530,18 +7479,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::cancelItemEdition",id],{ fileName : "TodoModel.hx", lineNumber : 74, className : "todomvc.model.TodoModel", methodName : "cancelItemEdition"});
 		var _g = 0;
-		var __tmp_8812416 = [];
+		var __tmp_7195703 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_8812416.push(e);
+				__tmp_7195703.push(e);
 			}
 		}
-		while(_g < __tmp_8812416.length) {
-			var e1 = __tmp_8812416[_g];
+		while(_g < __tmp_7195703.length) {
+			var e1 = __tmp_7195703[_g];
 			++_g;
 			_gthis.output.onEditItemDone(id,e1.title);
 			_gthis._updateCount();
@@ -7563,17 +7512,17 @@ todomvc_model_TodoModel.prototype = {
 	,_updateCount: function() {
 		this.logger.debug(["todomvc.model.TodoModel::_updateCount"],{ fileName : "TodoModel.hx", lineNumber : 87, className : "todomvc.model.TodoModel", methodName : "_updateCount"});
 		var itemCount = this._items.length;
-		var __tmp_13818963 = 0;
+		var __tmp_9989922 = 0;
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.completed == true) {
-				++__tmp_13818963;
+				++__tmp_9989922;
 			}
 		}
-		var completedItemCount = __tmp_13818963;
+		var completedItemCount = __tmp_9989922;
 		this.output.onUpdateItemCount(itemCount - completedItemCount);
 		this.output.onClearCompletedButton(completedItemCount,completedItemCount > 0);
 		this.output.onToggleAll(completedItemCount == itemCount);
@@ -7583,46 +7532,26 @@ todomvc_model_TodoModel.prototype = {
 };
 var todomvc_module_TodoModule = function(serviceConfig,viewConfig) {
 	hex_module_Module.call(this);
-	this.getLogger().info("TodoModule initialized",{ fileName : "TodoModule.hx", lineNumber : 27, className : "todomvc.module.TodoModule", methodName : "new"});
-	this._addStatelessConfigClasses([todomvc_module__$TodoModule_TodoModuleConfig]);
+	this._map(todomvc_control_ITodoController,todomvc_control_TodoController,"",true);
+	this._map(todomvc_model_ITodoModel,todomvc_model_TodoModel,"",true);
+	this._map(todomvc_model_IFilterModel,todomvc_model_FilterModel,"",true);
 	this._addStatefulConfigs([serviceConfig,viewConfig]);
-	this._addStatelessConfigClasses([todomvc_module__$TodoModule_ListenerConfig]);
+	this._get(todomvc_model_ITodoModel).output.connect(this._get(todomvc_view_ITodoView));
+	this._get(todomvc_model_IFilterModel).output.connect(this._get(todomvc_view_ITodoView));
 };
 $hxClasses["todomvc.module.TodoModule"] = todomvc_module_TodoModule;
 todomvc_module_TodoModule.__name__ = ["todomvc","module","TodoModule"];
 todomvc_module_TodoModule.__super__ = hex_module_Module;
 todomvc_module_TodoModule.prototype = $extend(hex_module_Module.prototype,{
 	_getRuntimeDependencies: function() {
-		return new hex_module_dependency_RuntimeDependencies();
+		var rd = new hex_module_dependency_RuntimeDependencies();
+		rd.addMappedDependencies([{ type : todomvc_view_ITodoView, name : ""},{ type : todomvc_service_ITodoService, name : ""}]);
+		return rd;
+	}
+	,_init: function() {
+		this.logger.debug(["TodoModule is initialized",this],{ fileName : "TodoModule.hx", lineNumber : 51, className : "todomvc.module.TodoModule", methodName : "_init"});
 	}
 	,__class__: todomvc_module_TodoModule
-});
-var todomvc_module__$TodoModule_TodoModuleConfig = function() {
-	hex_config_stateless_ModuleConfig.call(this);
-};
-$hxClasses["todomvc.module._TodoModule.TodoModuleConfig"] = todomvc_module__$TodoModule_TodoModuleConfig;
-todomvc_module__$TodoModule_TodoModuleConfig.__name__ = ["todomvc","module","_TodoModule","TodoModuleConfig"];
-todomvc_module__$TodoModule_TodoModuleConfig.__super__ = hex_config_stateless_ModuleConfig;
-todomvc_module__$TodoModule_TodoModuleConfig.prototype = $extend(hex_config_stateless_ModuleConfig.prototype,{
-	configure: function() {
-		this.mapController(todomvc_control_ITodoController,todomvc_control_TodoController,"",true);
-		this.mapModel(todomvc_model_ITodoModel,todomvc_model_TodoModel,"",true);
-		this.mapModel(todomvc_model_IFilterModel,todomvc_model_FilterModel,"",true);
-	}
-	,__class__: todomvc_module__$TodoModule_TodoModuleConfig
-});
-var todomvc_module__$TodoModule_ListenerConfig = function() {
-	hex_config_stateless_ModuleConfig.call(this);
-};
-$hxClasses["todomvc.module._TodoModule.ListenerConfig"] = todomvc_module__$TodoModule_ListenerConfig;
-todomvc_module__$TodoModule_ListenerConfig.__name__ = ["todomvc","module","_TodoModule","ListenerConfig"];
-todomvc_module__$TodoModule_ListenerConfig.__super__ = hex_config_stateless_ModuleConfig;
-todomvc_module__$TodoModule_ListenerConfig.prototype = $extend(hex_config_stateless_ModuleConfig.prototype,{
-	configure: function() {
-		this.get(todomvc_model_ITodoModel).output.connect(this.get(todomvc_view_ITodoView));
-		this.get(todomvc_model_IFilterModel).output.connect(this.get(todomvc_view_ITodoView));
-	}
-	,__class__: todomvc_module__$TodoModule_ListenerConfig
 });
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
 var $_, $fid = 0;
@@ -7650,7 +7579,6 @@ haxe_Template.globals = { };
 haxe_ds_ObjectMap.count = 0;
 hex_collection_LocatorMessage.REGISTER = "onRegister";
 hex_collection_LocatorMessage.UNREGISTER = "onUnregister";
-hex_config_stateless_ModuleConfig.__INJECTION_DATA = { c : { a : []}, p : [{ p : "injector", t : "hex.di.IDependencyInjector", n : "", o : false}], m : [], pc : [], pd : []};
 hex_control_async_AsyncCommand.WAS_NEVER_USED = "WAS_NEVER_USED";
 hex_control_async_AsyncCommand.IS_RUNNING = "IS_RUNNING";
 hex_control_async_AsyncCommand.IS_COMPLETED = "IS_COMPLETED";
@@ -7720,8 +7648,7 @@ todomvc_model_FilterModel.__meta__ = { fields : { output : { Trigger : null}}};
 todomvc_model_FilterModel.__INJECTION_DATA = { c : { a : []}, p : [{ p : "logger", t : "hex.log.ILogger", n : "", o : false}], m : [], pc : [], pd : []};
 todomvc_model_TodoModel.__meta__ = { fields : { output : { Trigger : null}}};
 todomvc_model_TodoModel.__INJECTION_DATA = { c : { a : []}, p : [{ p : "logger", t : "hex.log.ILogger", n : "", o : false}], m : [], pc : [], pd : []};
-todomvc_module__$TodoModule_TodoModuleConfig.__INJECTION_DATA = { c : { a : []}, p : [{ p : "injector", t : "hex.di.IDependencyInjector", n : "", o : false}], m : [], pc : [], pd : []};
-todomvc_module__$TodoModule_ListenerConfig.__INJECTION_DATA = { c : { a : []}, p : [{ p : "injector", t : "hex.di.IDependencyInjector", n : "", o : false}], m : [], pc : [], pd : []};
+todomvc_module_TodoModule.__INJECTION_DATA = { c : { a : []}, p : [{ p : "logger", t : "hex.log.ILogger", n : "", o : false}], m : [], pc : [{ m : "_init", a : [], o : 0}], pd : []};
 TodoMVC.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
 
