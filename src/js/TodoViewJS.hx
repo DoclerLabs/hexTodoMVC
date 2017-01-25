@@ -2,6 +2,7 @@ package js;
 
 import common.Filter;
 import common.TodoItem;
+import hex.error.IllegalStateException;
 import hex.log.ILogger;
 import js.Browser;
 import js.html.Element;
@@ -18,7 +19,10 @@ import todomvc.view.ITodoView;
 @:keepSub
 class TodoViewJS implements ITodoView
 {
-	var _controller 		: ITodoController;
+	@Inject
+	public var _controller 	: ITodoController;
+	
+	//var _controller 		: ITodoController;
 	var _qs 				: String -> Element = Browser.document.querySelector;
 	
 	var _template 			: Template;
@@ -47,12 +51,17 @@ class TodoViewJS implements ITodoView
 		this._toggleAll 		= cast toggleAll;
 		this._newTodo 			= cast newTodo;
 		
-		this.changeFooterVisibility( false );
+		this.onChangeFooterVisibility( false );
 	}
 	
-	@Debug public function setController( controller : ITodoController ) : Void
+	/*@Debug public function setController( controller : ITodoController ) : Void
 	{
-		this._controller = controller;
+		//this._controller = controller;
+		
+	}*/
+	
+	@PostConstruct @Debug public function _do() : Void
+	{
 		new JQuery( function() : Void { this._initJQuery(); } );
 	}
 	
@@ -140,27 +149,27 @@ class TodoViewJS implements ITodoView
 	/**
 	 * ITodoView implementation
 	 */
-	public function selectAllFilterButton() : Void
+	@Debug public function selectAllFilterButton() : Void
 	{
 		this._setFilter( '' );
 	}
 	
-	public function selectActiveFilterButton() : Void
+	@Debug public function selectActiveFilterButton() : Void
 	{
 		this._setFilter( 'active' );
 	}
 	
-	public function selectCompletedFilterButton() : Void
+	@Debug public function selectCompletedFilterButton() : Void
 	{
 		this._setFilter( 'completed' );
 	}
 	
-	public function showEntries( entries : Array<TodoItem> ) : Void 
+	@Debug public function onShowEntries( entries : Array<TodoItem> ) : Void 
 	{
 		this._todoList.innerHTML = this._template.items.execute( { items: entries } );
 	}
 	
-	public function removeItem(  id : String ) : Void 
+	@Debug public function onRemoveItem(  id : String ) : Void 
 	{
 		var elem = this._qs( '[data-id="' + id + '"]' );
 
@@ -170,33 +179,33 @@ class TodoViewJS implements ITodoView
 		}
 	}
 	
-	public function updateItemCount( activeItems : Int ) : Void 
+	@Debug public function onUpdateItemCount( activeItems : Int ) : Void 
 	{
 		this._todoItemCounter.innerHTML = this._template.activeItems.execute( { activeItems: activeItems } );
 	}
 	
-	public function clearCompletedButton( completedCount : Int, visible : Bool ) : Void 
+	@Debug public function onClearCompletedButton( completedCount : Int, visible : Bool ) : Void 
 	{
 		this._clearCompleted.innerHTML = this._template.completedCount.execute( { completedCount: completedCount } );
 		this._clearCompleted.style.display = visible ? 'block' : 'none';
 	}
 	
-	public function changeFooterVisibility( isVisible : Bool ) : Void 
+	public function onChangeFooterVisibility( isVisible : Bool ) : Void 
 	{
 		this._main.style.display = this._footer.style.display = isVisible ? 'block' : 'none';
 	}
 	
-	public function toggleAll( isChecked : Bool ) : Void 
+	@Debug public function onToggleAll( isChecked : Bool ) : Void 
 	{
 		this._toggleAll.checked = isChecked;
 	}
 	
-	public function clearNewTodo() : Void
+	@Debug public function onClearNewTodo() : Void
 	{
 		this._newTodo.value = '';
 	}
 	
-	public function setItemCompleted( id : String, isCompleted : Bool ) : Void 
+	@Debug public function onSetItemCompleted( id : String, isCompleted : Bool ) : Void 
 	{
 		var item = this._qs( '[data-id="' + id + '"]' );
 
@@ -208,7 +217,7 @@ class TodoViewJS implements ITodoView
 		}
 	}
 	
-	public function editItem( id : String, title : String ) : Void
+	@Debug public function onEditItem( id : String, title : String ) : Void
 	{
 		var item = this._qs('[data-id="' + id + '"]');
 
@@ -223,7 +232,7 @@ class TodoViewJS implements ITodoView
 		}
 	}
 	
-	public function editItemDone( id : String, title : String ) : Void
+	@Debug public function onEditItemDone( id : String, title : String ) : Void
 	{
 		var item = this._qs( '[data-id="' + id + '"]' );
 
@@ -238,6 +247,27 @@ class TodoViewJS implements ITodoView
 			{
 				( cast label ).textContent = title;
 			}
+		}
+	}
+	
+	@Debug public function changeFilter( currentFilter : Filter ) : Void
+	{
+		switch( currentFilter )
+		{
+			case Filter.ALL:
+				this.selectAllFilterButton();
+				this._controller.showAll().onComplete( this.onShowEntries.bind() );
+				
+			case Filter.ACTIVE:
+				this.selectActiveFilterButton();
+				this._controller.showActive().onComplete( this.onShowEntries.bind() );
+				
+			case Filter.COMPLETED:
+				this.selectCompletedFilterButton();
+				this._controller.showCompleted().onComplete( this.onShowEntries.bind() );
+				
+			case _:
+				throw new IllegalStateException( "changeFilter call with illegal filter parameter: '" + currentFilter + "'" );
 		}
 	}
 	
