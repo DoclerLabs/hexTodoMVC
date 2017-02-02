@@ -13,7 +13,6 @@ using hex.util.ArrayUtil;
 @:keepSub
 class TodoModel implements ITodoModel
 {
-	@Trigger
 	public var output( default, never ) : ITrigger<ITodoConnection>;
 	
 	var _items : Array<TodoItem> = [];

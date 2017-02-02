@@ -1,5 +1,7 @@
 package todomvc.view;
 
+import common.IFilterConnection;
+import common.ITodoConnection;
 import common.TodoItem;
 import hex.di.IInjectorContainer;
 import hex.log.IsLoggable;
@@ -9,9 +11,11 @@ import todomvc.control.ITodoController;
  * @author Francis Bourre
  */
 @:keepSub
-interface ITodoView extends IsLoggable extends IInjectorContainer
+interface ITodoView 
+	extends IFilterConnection extends ITodoConnection
+	extends IsLoggable extends IInjectorContainer
 {
-	function setController( controller : ITodoController ) : Void;
+	/*function setController( controller : ITodoController ) : Void;
 	
 	function selectAllFilterButton() : Void;
 	
@@ -37,5 +41,5 @@ interface ITodoView extends IsLoggable extends IInjectorContainer
 	
 	function editItem( id : String, title : String ) : Void;
 	
-	function editItemDone( id : String, title : String ) : Void;
+	function editItemDone( id : String, title : String ) : Void;*/
 }

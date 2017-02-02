@@ -3,9 +3,9 @@ package todomvc.control;
 import common.Filter;
 import common.TodoItem;
 import hex.control.ICompletable;
+import hex.control.forward.IForwarder;
 import hex.di.IInjectorContainer;
 import hex.log.IsLoggable;
-import hex.mdvc.driver.IForwarder;
 
 /**
  * @author Francis Bourre
