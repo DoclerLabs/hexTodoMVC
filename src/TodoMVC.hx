@@ -17,6 +17,6 @@ class TodoMVC
 			#end
 		#end
 		
-		hex.compiler.parser.xml.XmlCompiler.readXmlFile( "configuration/context.xml", null, [ "browser" => true, "flashplayer" => false ] );
+		hex.compiletime.xml.BasicXmlCompiler.compile( "configuration/context.xml", null, [ "browser" => true, "flashplayer" => false ] );
 	}
 }

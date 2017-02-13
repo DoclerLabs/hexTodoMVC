@@ -1,7 +1,5 @@
 package common;
 
-import todomvc.control.ITodoController;
-
 /**
  * @author Francis Bourre
  */
