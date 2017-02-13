@@ -10,13 +10,12 @@
   "url": "https://github.com/DoclerLabs/hexTodoMVC",
   "dependencies": 
   {
-    "hexcore": "git:https://github.com/DoclerLabs/hexCore.git",
-	"hexreflection": "git:https://github.com/DoclerLabs/hexReflection.git",
-    "hexannotation": "git:https://github.com/DoclerLabs/hexAnnotation.git",
-    "hexinject": "git:https://github.com/DoclerLabs/hexInject.git",
-	"hexmvc": "git:https://github.com/DoclerLabs/hexMVC.git",
-	"hexstate": "git:https://github.com/DoclerLabs/hexState.git",
-	"hexservice": "git:https://github.com/DoclerLabs/hexService.git",
-	"hexservice": "git:https://github.com/DoclerLabs/hexTodoMVC.git"
+    "hexcore": "0.15.0",
+	"hexreflection": "0.15.0",
+    "hexannotation": "0.15.0",
+    "hexinject": "0.15.0",
+    "hexdsl": "0.15.0",
+	"hexmvc": "0.15.0",
+	"hexservice": "0.15.0"
   }
 }

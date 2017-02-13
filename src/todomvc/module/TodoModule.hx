@@ -1,7 +1,6 @@
 package todomvc.module;
 
 import hex.config.stateful.IStatefulConfig;
-import hex.di.IInjectorContainer;
 import hex.log.IsLoggable;
 import hex.module.Module;
 import hex.module.dependency.IRuntimeDependencies;
@@ -51,6 +50,5 @@ class TodoModule extends Module implements IsLoggable
 	function _init() : Void 
 	{
 		super._onInitialisation();
-		
 	}
 }

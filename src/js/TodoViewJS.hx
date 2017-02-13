@@ -3,7 +3,6 @@ package js;
 import common.Filter;
 import common.TodoItem;
 import hex.error.IllegalStateException;
-import hex.log.ILogger;
 import js.Browser;
 import js.html.Element;
 import js.html.InputElement;
