@@ -6705,31 +6705,31 @@ todomvc_model_TodoModel.prototype = {
 	}
 	,getActiveItems: function() {
 		this.logger.debug(["todomvc.model.TodoModel::getActiveItems"],{ fileName : "TodoModel.hx", lineNumber : 25, className : "todomvc.model.TodoModel", methodName : "getActiveItems"});
-		var __tmp_8043957 = [];
+		var __tmp_370825 = [];
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(!e.completed) {
-				__tmp_8043957.push(e);
+				__tmp_370825.push(e);
 			}
 		}
-		return __tmp_8043957;
+		return __tmp_370825;
 	}
 	,getCompletedItems: function() {
 		this.logger.debug(["todomvc.model.TodoModel::getCompletedItems"],{ fileName : "TodoModel.hx", lineNumber : 30, className : "todomvc.model.TodoModel", methodName : "getCompletedItems"});
-		var __tmp_12775343 = [];
+		var __tmp_14571193 = [];
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.completed) {
-				__tmp_12775343.push(e);
+				__tmp_14571193.push(e);
 			}
 		}
-		return __tmp_12775343;
+		return __tmp_14571193;
 	}
 	,addItem: function(item) {
 		this.logger.debug(["todomvc.model.TodoModel::addItem",item],{ fileName : "TodoModel.hx", lineNumber : 35, className : "todomvc.model.TodoModel", methodName : "addItem"});
@@ -6742,18 +6742,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::removeItem",id],{ fileName : "TodoModel.hx", lineNumber : 43, className : "todomvc.model.TodoModel", methodName : "removeItem"});
 		var _g = 0;
-		var __tmp_12014521 = [];
+		var __tmp_9924033 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_12014521.push(e);
+				__tmp_9924033.push(e);
 			}
 		}
-		while(_g < __tmp_12014521.length) {
-			var e1 = __tmp_12014521[_g];
+		while(_g < __tmp_9924033.length) {
+			var e1 = __tmp_9924033[_g];
 			++_g;
 			HxOverrides.remove(_gthis._items,e1);
 			_gthis.output.onRemoveItem(e1.id);
@@ -6762,36 +6762,36 @@ todomvc_model_TodoModel.prototype = {
 	}
 	,startItemEdition: function(id) {
 		this.logger.debug(["todomvc.model.TodoModel::startItemEdition",id],{ fileName : "TodoModel.hx", lineNumber : 49, className : "todomvc.model.TodoModel", methodName : "startItemEdition"});
-		var __tmp_14124038 = null;
+		var __tmp_5643708 = null;
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.id == id) {
-				__tmp_14124038 = e;
+				__tmp_5643708 = e;
 				break;
 			}
 		}
-		var item = __tmp_14124038;
+		var item = __tmp_5643708;
 		this.output.onEditItem(item.id,item.title);
 	}
 	,removeCompletedItems: function() {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::removeCompletedItems"],{ fileName : "TodoModel.hx", lineNumber : 55, className : "todomvc.model.TodoModel", methodName : "removeCompletedItems"});
 		var _g = 0;
-		var __tmp_11123707 = [];
+		var __tmp_6051449 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.completed == true) {
-				__tmp_11123707.push(e);
+				__tmp_6051449.push(e);
 			}
 		}
-		while(_g < __tmp_11123707.length) {
-			var e1 = __tmp_11123707[_g];
+		while(_g < __tmp_6051449.length) {
+			var e1 = __tmp_6051449[_g];
 			++_g;
 			_gthis.output.onRemoveItem(e1.id);
 			HxOverrides.remove(_gthis._items,e1);
@@ -6802,18 +6802,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::setItemCompleted",id,isCompleted],{ fileName : "TodoModel.hx", lineNumber : 61, className : "todomvc.model.TodoModel", methodName : "setItemCompleted"});
 		var _g = 0;
-		var __tmp_5311176 = [];
+		var __tmp_15097888 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_5311176.push(e);
+				__tmp_15097888.push(e);
 			}
 		}
-		while(_g < __tmp_5311176.length) {
-			var e1 = __tmp_5311176[_g];
+		while(_g < __tmp_15097888.length) {
+			var e1 = __tmp_15097888[_g];
 			++_g;
 			e1.completed = isCompleted;
 			_gthis.output.onSetItemCompleted(id,isCompleted);
@@ -6824,18 +6824,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::renameItem",id,title],{ fileName : "TodoModel.hx", lineNumber : 67, className : "todomvc.model.TodoModel", methodName : "renameItem"});
 		var _g = 0;
-		var __tmp_8366668 = [];
+		var __tmp_11725153 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_8366668.push(e);
+				__tmp_11725153.push(e);
 			}
 		}
-		while(_g < __tmp_8366668.length) {
-			var e1 = __tmp_8366668[_g];
+		while(_g < __tmp_11725153.length) {
+			var e1 = __tmp_11725153[_g];
 			++_g;
 			e1.title = title;
 			_gthis.output.onEditItemDone(id,title);
@@ -6846,18 +6846,18 @@ todomvc_model_TodoModel.prototype = {
 		var _gthis = this;
 		this.logger.debug(["todomvc.model.TodoModel::cancelItemEdition",id],{ fileName : "TodoModel.hx", lineNumber : 73, className : "todomvc.model.TodoModel", methodName : "cancelItemEdition"});
 		var _g = 0;
-		var __tmp_2411647 = [];
+		var __tmp_1132739 = [];
 		var _g1 = 0;
 		var _g11 = this._items;
 		while(_g1 < _g11.length) {
 			var e = _g11[_g1];
 			++_g1;
 			if(e.id == id) {
-				__tmp_2411647.push(e);
+				__tmp_1132739.push(e);
 			}
 		}
-		while(_g < __tmp_2411647.length) {
-			var e1 = __tmp_2411647[_g];
+		while(_g < __tmp_1132739.length) {
+			var e1 = __tmp_1132739[_g];
 			++_g;
 			_gthis.output.onEditItemDone(id,e1.title);
 			_gthis._updateCount();
@@ -6879,17 +6879,17 @@ todomvc_model_TodoModel.prototype = {
 	,_updateCount: function() {
 		this.logger.debug(["todomvc.model.TodoModel::_updateCount"],{ fileName : "TodoModel.hx", lineNumber : 86, className : "todomvc.model.TodoModel", methodName : "_updateCount"});
 		var itemCount = this._items.length;
-		var __tmp_13116981 = 0;
+		var __tmp_9505680 = 0;
 		var _g = 0;
 		var _g1 = this._items;
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
 			if(e.completed == true) {
-				++__tmp_13116981;
+				++__tmp_9505680;
 			}
 		}
-		var completedItemCount = __tmp_13116981;
+		var completedItemCount = __tmp_9505680;
 		this.output.onUpdateItemCount(itemCount - completedItemCount);
 		this.output.onClearCompletedButton(completedItemCount,completedItemCount > 0);
 		this.output.onToggleAll(completedItemCount == itemCount);
