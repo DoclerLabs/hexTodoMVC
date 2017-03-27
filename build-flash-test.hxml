@@ -1,0 +1,3 @@
+build-each-test.hxml
+-swf-version 11
+-swf bin/MainTodoMVCTest.swf
