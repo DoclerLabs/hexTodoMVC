@@ -10,12 +10,7 @@
   "url": "https://github.com/DoclerLabs/hexTodoMVC",
   "dependencies": 
   {
-    "hexcore": "0.15.0",
-	"hexreflection": "0.15.0",
-    "hexannotation": "0.15.0",
-    "hexinject": "0.15.0",
-    "hexdsl": "0.15.0",
-	"hexmvc": "0.15.0",
-	"hexservice": "0.15.0"
+    "hexmachina": "0.15.0",
+    "hexunit": "0.15.0"
   }
 }

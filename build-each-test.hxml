@@ -1,7 +1,8 @@
--main TodoMVC
+-main MainTodoMVCTest
 
 -lib hexmachina
 
 -cp src
+-cp test
 
 -debug

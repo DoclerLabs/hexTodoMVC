@@ -1,0 +1,2 @@
+build-each-test.hxml
+-js bin/MainTodoMVCTest.js
