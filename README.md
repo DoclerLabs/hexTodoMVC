@@ -12,3 +12,21 @@ TodoMVC applications built with hexMachina framework.
 * [hexDSL](https://github.com/DoclerLabs/hexDSL)
 * [hexMVC](https://github.com/DoclerLabs/hexMVC)
 * [hexService](https://github.com/DoclerLabs/hexService)
+
+## How to compile
+
+In terminal : 
+```bash
+# check out the repo
+git clone https://github.com/DoclerLabs/hexTodoMVC.git hexTodoMVC && cd hexTodoMVC/
+# create a local haxelib repo, and donwnload dependencies
+haxelib newrepo && haxelib install haxelib.json
+# build project
+haxe build-js.hxml
+# open HTML in a browser
+open index.html
+```
+
+## test online demo 
+
+https://doclerlabs.github.io/hexTodoMVC/
