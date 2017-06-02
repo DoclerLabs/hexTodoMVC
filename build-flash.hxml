@@ -1,3 +1,6 @@
 build-each.hxml
 -swf-version 11
--swf js/MainTodoMVC.swf
+-swf bin/MainTodoMVC.swf
+
+-D browser=0
+-D flashplayer

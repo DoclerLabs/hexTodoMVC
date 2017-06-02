@@ -1,5 +1,12 @@
 package;
 
+import hex.compiletime.xml.BasicStaticXmlCompiler;
+import hex.domain.TopLevelDomain;
+import hex.log.LogManager;
+import hex.log.DomainLoggerContext;
+import hex.log.TraceEverythingDomainConfiguration;
+import hex.runtime.ApplicationAssembler;
+
 /**
  * ...
  * @author Francis Bourre
@@ -9,14 +16,11 @@ class TodoMVC
 	static public function main() : Void
 	{
 		#if debug
-			var proxy : hex.log.layout.LogProxyLayout = new hex.log.layout.LogProxyLayout();
-			#if js
-			proxy.addListener( new hex.log.layout.JavaScriptConsoleLayout() );
-			#elseif flash
-			proxy.addListener( new hex.log.layout.TraceLayout() );
-			#end
+			LogManager.context = new DomainLoggerContext(TopLevelDomain.DOMAIN);
+			DomainLoggerContext.getContext().setConfiguration(new TraceEverythingDomainConfiguration());
 		#end
-		
-		hex.compiletime.xml.BasicXmlCompiler.compile( "configuration/context.xml", null, [ "browser" => true, "flashplayer" => false ] );
+		// convert XML DSL to haxe code by Macro
+		var code = BasicStaticXmlCompiler.compile( new ApplicationAssembler(), "configuration/context.xml" );
+		code.execute();
 	}
 }

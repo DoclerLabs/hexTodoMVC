@@ -1,5 +1,5 @@
 {
-  "name": "hexioc",
+  "name": "hextodomvc",
   "license": "MIT",
   "classPath": "src",
   "tags": ["hexmachina", "mvc", "oop"],
@@ -10,7 +10,7 @@
   "url": "https://github.com/DoclerLabs/hexTodoMVC",
   "dependencies": 
   {
-    "hexmachina": "0.15.0",
-    "hexunit": "0.15.0"
+    "hexmachina": "0.22.0",
+    "hexunit": "0.22.0"
   }
 }

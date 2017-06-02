@@ -1,2 +1,5 @@
 build-each.hxml
--js js/MainTodoMVC.js
+-js bin/MainTodoMVC.js
+
+-D browser
+-D flashplayer=0
