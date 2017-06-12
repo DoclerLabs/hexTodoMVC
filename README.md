@@ -20,7 +20,7 @@ In terminal :
 # check out the repo
 git clone https://github.com/DoclerLabs/hexTodoMVC.git hexTodoMVC && cd hexTodoMVC/
 # create a local haxelib repo, and donwnload dependencies
-haxelib newrepo && haxelib install haxelib.json
+haxelib newrepo && haxelib install build-js.hxml
 # build project
 haxe build-js.hxml
 # open HTML in a browser

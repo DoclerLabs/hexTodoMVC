@@ -1,7 +1,5 @@
 -main TodoMVC
 
--lib hexmachina
+-lib hexmachina:0.23.0
 
 -cp src
-
--debug

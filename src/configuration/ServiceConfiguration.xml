@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <root>
-	<config id="todoServiceLocator" type="hex.di.mapping.MappingConfiguration" >
-		<item> 
-			<key type="Class" value="todomvc.service.ITodoService"/>
-			<value type="Class" value="configuration.TodoLocalStorage"/>
-		</item>
-	</config>
+	<test id="serviceMapping" type="hex.di.mapping.MappingDefinition">
+        <property name="fromType" value="todomvc.service.ITodoService"/>
+        <property name="toClass" type="Class" value="configuration.TodoLocalStorage"/>
+    </test>
 </root>

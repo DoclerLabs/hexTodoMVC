@@ -4,3 +4,5 @@ build-each.hxml
 
 -D browser=0
 -D flashplayer
+
+-debug

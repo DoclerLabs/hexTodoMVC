@@ -3,3 +3,17 @@ build-each.hxml
 
 -D browser
 -D flashplayer=0
+
+-debug
+
+-dce full
+--macro keep('hex.context.applicationContext')
+--macro keep('hex.runtime.ApplicationAssembler')
+--macro keep('hex.runtime.basic.ApplicationContext')
+
+# Google Closure Compiler plugin for Haxe builds
+#-lib closure
+# turn on pretty printing:
+#-D closure_prettyprint
+# overwrite original output rather then generating a .min.js next to it
+#-D closure_overwrite

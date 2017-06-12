@@ -1,6 +1,7 @@
 -main MainTodoMVCTest
 
--lib hexmachina
+-lib hexmachina:0.23.0
+-lib hexunit:0.23.0
 
 -cp src
 -cp test

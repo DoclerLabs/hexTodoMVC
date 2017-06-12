@@ -3,7 +3,7 @@
 	
 	<container id="container" type="flash.display.Sprite"/>
 	
-	<view id="view" type="configuration.flash.TodoViewFlash">
+	<view id="view" type="flash.TodoViewFlash">
 		<argument ref="container"/>
 	</view>
 		
