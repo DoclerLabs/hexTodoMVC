@@ -1,28 +1,31 @@
 package configuration;
 
+import haxe.Json;
+import common.TodoItem;
 import common.TodoItem;
 import todomvc.service.ITodoService;
+import hex.log.IsLoggable;
 
 /**
  * ...
  * @author Francis Bourre
  */
 @:keepSub
-class TodoLocalStorage implements ITodoService
+class TodoLocalStorage implements ITodoService implements IsLoggable
 {
+	static var STORAGE_ID = 'todos-hexMachina';
 
 	public function new() 
 	{
-		
 	}
 	
-	public function load (): Array<TodoItem>
+	@Debug public function load (): Array<TodoItem>
 	{
-		return null;
+		return Json.parse(js.Browser.getLocalStorage().getItem(STORAGE_ID));
 	}
 	
-    public function save( todos : Array<TodoItem> ) : Void
+    @Debug public function save( todos : Array<TodoItem> ) : Void
 	{
-		
+		js.Browser.getLocalStorage().setItem(STORAGE_ID, Json.stringify(todos));
 	}
 }

@@ -32,11 +32,14 @@ class TodoModule extends ContextModule implements IsLoggable implements IDepende
 
 		this._map( ITodoModel, TodoModel, '', true );
 		this._map( IFilterModel, FilterModel, '', true );
+	}
 
-		@AfterMapping
-
+	override function _onInitialisation() : Void
+	{
 		this._get( ITodoModel ).output.connect( this._get( ITodoView ) );
 		this._get( IFilterModel ).output.connect( this._get( ITodoView ) );
+
+		this._get( ITodoController ).populateModel();
 	}
 
 }

@@ -36,4 +36,6 @@ interface ITodoController extends IForwarder extends IsLoggable extends IInjecto
 	function toggleComplete( id : String, isCompleted : Bool ) : Void;
 
 	function toggleAll( isCompleted : Bool ) : Void;
+
+	function populateModel() : Void;
 }
